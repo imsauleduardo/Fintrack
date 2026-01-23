@@ -1,0 +1,1152 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Product Requirements Document (PRD)}\\
+\large Fintrack - Aplicación de Control de Finanzas Personales}
+\author{Análisis de Negocios}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Resumen}
+
+Fintrack es una Progressive Web Application (PWA) diseñada para ofrecer un control financiero integral y estructurado a usuarios que buscan gestionar sus finanzas personales de manera eficiente. La aplicación es instalable desde navegadores en dispositivos iOS y Android, permitiendo el registro de ingresos y egresos mediante múltiples canales: entrada de texto, escaneo de recibos con cámara, registro manual categorizado y detección automática desde correos electrónicos.
+
+El alcance de Fintrack incluye la gestión completa de activos, pasivos, presupuestos configurables (diarios, semanales, mensuales, anuales) y seguimiento de metas financieras. Adicionalmente, incorpora un módulo de Insights Financieros con estadísticas avanzadas, ratios como flujo de caja, y recomendaciones personalizadas generadas mediante inteligencia artificial. El objetivo principal es empoderar al usuario con visibilidad completa de su salud financiera y facilitarle la toma de decisiones informadas.
+
+\section{Objetivos}
+
+\begin{enumerate}[label=\textbf{O\arabic*.},leftmargin=*]
+    \item \textbf{Facilitar el registro de movimientos financieros} mediante múltiples métodos (texto, OCR de recibos, manual, email) para maximizar la adopción y uso continuo.
+    \item \textbf{Proporcionar visibilidad integral} sobre ingresos, egresos, activos y pasivos del usuario en tiempo real.
+    \item \textbf{Permitir planificación financiera} a través de presupuestos configurables en diferentes horizontes temporales.
+    \item \textbf{Impulsar el cumplimiento de metas financieras} mediante seguimiento visual y notificaciones de progreso.
+    \item \textbf{Generar insights accionables} utilizando análisis de datos e inteligencia artificial para mejorar hábitos financieros.
+    \item \textbf{Garantizar accesibilidad multiplataforma} mediante PWA instalable en iOS y Android sin fricción.
+    \item \textbf{Minimizar costos operativos} seleccionando infraestructura serverless y servicios de IA económicos.
+\end{enumerate}
+
+\section{Funcionalidades Atómicas}
+
+Las funcionalidades se desglosan en módulos implementables de forma independiente:
+
+\subsection{Autenticación y Gestión de Usuario}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*]
+    \item Registro de usuario con email y contraseña.
+    \item Login con autenticación OAuth (Google, Apple).
+    \item Recuperación de contraseña mediante email.
+    \item Gestión de perfil de usuario (nombre, foto, preferencias).
+    \item Configuración de moneda predeterminada y zona horaria.
+\end{enumerate}
+
+\subsection{Registro de Movimientos Financieros}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Registro de ingreso mediante entrada de texto en lenguaje natural (procesado por IA).
+    \item Registro de egreso mediante entrada de texto en lenguaje natural.
+    \item Escaneo de recibos físicos utilizando cámara del dispositivo.
+    \item Extracción de datos de recibos mediante OCR (fecha, monto, comercio, categoría sugerida).
+    \item Registro manual de movimiento con campos: tipo (ingreso/egreso), monto, fecha, categoría, descripción, método de pago.
+    \item Edición y eliminación de movimientos registrados.
+    \item Adjuntar imagen del recibo a un movimiento existente.
+\end{enumerate}
+
+\subsection{Sincronización con Email}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Configuración de integración con cuenta de Gmail (OAuth).
+    \item Programación de escaneo automático diario del buzón de correo.
+    \item Detección de emails de notificaciones bancarias de ingresos y egresos.
+    \item Extracción de información financiera de emails (monto, fecha, entidad, categoría sugerida).
+    \item Cola de movimientos detectados pendientes de aprobación del usuario.
+    \item Aprobación o rechazo individual de movimientos detectados.
+    \item Aprobación masiva de movimientos con filtros.
+\end{enumerate}
+
+\subsection{Gestión de Categorías}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Listado de categorías predeterminadas para ingresos (salario, inversiones, otros).
+    \item Listado de categorías predeterminadas para egresos (alimentación, transporte, vivienda, entretenimiento, salud, educación, otros).
+    \item Creación de categorías personalizadas por el usuario.
+    \item Edición y eliminación de categorías personalizadas.
+    \item Asignación de iconos y colores a categorías.
+\end{enumerate}
+
+\subsection{Gestión de Activos y Pasivos}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Registro de activos (cuentas bancarias, inversiones, propiedades, otros).
+    \item Registro de pasivos (préstamos, tarjetas de crédito, deudas).
+    \item Actualización manual del valor de activos y saldo de pasivos.
+    \item Visualización de patrimonio neto (activos - pasivos).
+    \item Historial de evolución del patrimonio neto.
+\end{enumerate}
+
+\subsection{Presupuestos}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Creación de presupuesto diario por categoría o total.
+    \item Creación de presupuesto semanal por categoría o total.
+    \item Creación de presupuesto mensual por categoría o total.
+    \item Creación de presupuesto anual por categoría o total.
+    \item Seguimiento en tiempo real del gasto vs presupuesto.
+    \item Alertas cuando se alcanza el 80\% y 100\% del presupuesto.
+    \item Visualización gráfica de consumo de presupuesto.
+\end{enumerate}
+
+\subsection{Metas Financieras}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Creación de meta financiera (nombre, monto objetivo, fecha límite).
+    \item Asignación de ahorros periódicos a una meta.
+    \item Seguimiento visual del progreso hacia la meta.
+    \item Notificaciones de hitos alcanzados (25\%, 50\%, 75\%, 100\%).
+    \item Proyección de cumplimiento basada en ritmo de ahorro actual.
+\end{enumerate}
+
+\subsection{Insights Financieros}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Dashboard con resumen financiero mensual (ingresos, egresos, ahorro).
+    \item Gráficos de distribución de gastos por categoría (pie chart).
+    \item Gráficos de evolución temporal de ingresos y egresos (line chart).
+    \item Cálculo de flujo de caja mensual y acumulado.
+    \item Cálculo de tasa de ahorro mensual (ahorro/ingresos).
+    \item Cálculo de ratio de endeudamiento (pasivos/activos).
+    \item Detección de patrones de gasto recurrente mediante IA.
+    \item Generación de recomendaciones personalizadas basadas en comportamiento financiero (reducir gastos en categoría X, aumentar ahorro, etc.).
+    \item Predicción de gastos futuros basada en histórico.
+    \item Exportación de reportes financieros en PDF.
+\end{enumerate}
+
+\subsection{PWA y Experiencia de Usuario}
+
+\begin{enumerate}[label=\textbf{F\arabic*.},leftmargin=*,resume]
+    \item Instalación de PWA desde navegador en iOS.
+    \item Instalación de PWA desde navegador en Android.
+    \item Funcionamiento offline con sincronización posterior.
+    \item Notificaciones push para alertas de presupuesto y metas.
+    \item Interfaz responsive adaptada a móvil y desktop.
+    \item Modo oscuro y claro configurables.
+    \item Onboarding interactivo para nuevos usuarios.
+\end{enumerate}
+
+\section{Stack Tecnológico}
+
+La selección del stack prioriza la minimización de costos, escalabilidad y facilidad de desarrollo:
+
+\subsection{Frontend}
+
+\begin{itemize}
+    \item \textbf{Framework}: Next.js 14+ con App Router (React 18+)
+    \item \textbf{Lenguaje}: TypeScript para type safety
+    \item \textbf{PWA}: next-pwa plugin para configuración de Service Worker y manifest
+    \item \textbf{Estilos}: Tailwind CSS para diseño responsive rápido
+    \item \textbf{Gráficos}: Recharts o Chart.js para visualizaciones
+    \item \textbf{Gestión de Estado}: Zustand o React Context API (para mantener simplicidad)
+    \item \textbf{Formularios}: React Hook Form + Zod para validación
+\end{itemize}
+
+\textit{Justificación}: Next.js permite despliegue gratuito en Vercel con excelente rendimiento. PWA nativa con soporte offline. TypeScript reduce bugs en producción.
+
+\subsection{Backend y Base de Datos}
+
+\begin{itemize}
+    \item \textbf{BaaS}: Supabase (plan gratuito: 500MB database, 2GB bandwidth, 50MB file storage)
+    \item \textbf{Base de Datos}: PostgreSQL (incluido en Supabase)
+    \item \textbf{Autenticación}: Supabase Auth (OAuth con Google/Apple incluido)
+    \item \textbf{Storage}: Supabase Storage para imágenes de recibos
+    \item \textbf{Edge Functions}: Supabase Edge Functions (Deno) para lógica serverless
+    \item \textbf{Real-time}: Supabase Realtime para sincronización instantánea
+\end{itemize}
+
+\textit{Justificación}: Supabase ofrece tier gratuito generoso, elimina necesidad de backend custom, incluye autenticación y storage. PostgreSQL permite queries complejas para analytics. Edge Functions evitan costos de servidor tradicional.
+
+\subsection{API de Inteligencia Artificial}
+
+\begin{itemize}
+    \item \textbf{LLM}: Google Gemini 2.0 Flash (gratuito hasta 1500 requests/día)
+    \item \textbf{OCR}: Google Cloud Vision API (1000 unidades/mes gratuitas) o Tesseract.js (gratuito, cliente)
+    \item \textbf{Procesamiento NLP}: Gemini para extracción de intención en texto natural
+\end{itemize}
+
+\textit{Justificación}: Gemini 2.0 Flash ofrece tier gratuito suficiente para MVP y costo muy bajo en producción (\$0.075/1M tokens input). Vision API gratuita para OCR básico. Tesseract.js elimina costos API pero con menor precisión.
+
+\subsection{Integraciones Externas}
+
+\begin{itemize}
+    \item \textbf{Email}: Gmail API (OAuth 2.0) para lectura de correos
+    \item \textbf{Notificaciones Push}: Firebase Cloud Messaging (gratuito)
+    \item \textbf{Analytics}: Vercel Analytics (incluido en despliegue)
+\end{itemize}
+
+\subsection{DevOps y Hosting}
+
+\begin{itemize}
+    \item \textbf{Hosting Frontend}: Vercel (gratuito para proyectos personales, 100GB bandwidth)
+    \item \textbf{CI/CD}: GitHub Actions (2000 min/mes gratuitas)
+    \item \textbf{Versionado}: Git + GitHub
+    \item \textbf{Monitoreo}: Sentry (plan gratuito 5K eventos/mes)
+\end{itemize}
+
+\textit{Justificación}: Stack completamente gratuito hasta escala significativa (miles de usuarios). Costos predecibles y escalables.
+
+\section{Estructura de las API}
+
+Las APIs se implementan como Edge Functions en Supabase y API Routes en Next.js:
+
+\subsection{Endpoints de Movimientos}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+POST & /api/transactions & Crear movimiento manual \\
+GET & /api/transactions & Listar movimientos (filtros: fecha, tipo, categoría) \\
+GET & /api/transactions/:id & Obtener detalle de movimiento \\
+PUT & /api/transactions/:id & Actualizar movimiento \\
+DELETE & /api/transactions/:id & Eliminar movimiento \\
+POST & /api/transactions/ocr & Procesar imagen de recibo \\
+POST & /api/transactions/nlp & Procesar texto natural \\
+\bottomrule
+\end{tabular}
+\caption{API de Transacciones}
+\end{table}
+
+\textbf{Ejemplo POST /api/transactions}:
+\begin{verbatim}
+Request:
+{
+  "type": "expense",
+  "amount": 45.50,
+  "currency": "USD",
+  "date": "2026-01-22",
+  "category_id": "uuid-categoria",
+  "description": "Almuerzo restaurante",
+  "payment_method": "tarjeta_credito",
+  "receipt_image_url": "opcional"
+}
+
+Response 201:
+{
+  "id": "uuid-transaccion",
+  "user_id": "uuid-usuario",
+  "created_at": "2026-01-22T14:30:00Z",
+  ...
+}
+\end{verbatim}
+
+\subsection{Endpoints de Email Sync}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+POST & /api/email/connect & Conectar cuenta Gmail (OAuth) \\
+GET & /api/email/status & Estado de integración \\
+POST & /api/email/scan & Escaneo manual inmediato \\
+GET & /api/email/pending & Listar movimientos pendientes aprobación \\
+POST & /api/email/approve/:id & Aprobar movimiento detectado \\
+POST & /api/email/reject/:id & Rechazar movimiento detectado \\
+POST & /api/email/approve-bulk & Aprobar múltiples movimientos \\
+\bottomrule
+\end{tabular}
+\caption{API de Sincronización Email}
+\end{table}
+
+\subsection{Endpoints de Presupuestos}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+POST & /api/budgets & Crear presupuesto \\
+GET & /api/budgets & Listar presupuestos activos \\
+GET & /api/budgets/:id & Detalle y progreso de presupuesto \\
+PUT & /api/budgets/:id & Actualizar presupuesto \\
+DELETE & /api/budgets/:id & Eliminar presupuesto \\
+GET & /api/budgets/:id/progress & Progreso actual vs presupuesto \\
+\bottomrule
+\end{tabular}
+\caption{API de Presupuestos}
+\end{table}
+
+\subsection{Endpoints de Insights}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+GET & /api/insights/dashboard & Dashboard mensual resumido \\
+GET & /api/insights/cashflow & Flujo de caja por período \\
+GET & /api/insights/ratios & Ratios financieros calculados \\
+POST & /api/insights/recommendations & Generar recomendaciones IA \\
+GET & /api/insights/predictions & Predicciones de gasto futuro \\
+POST & /api/insights/export-pdf & Exportar reporte PDF \\
+\bottomrule
+\end{tabular}
+\caption{API de Insights}
+\end{table}
+
+\textbf{Ejemplo GET /api/insights/ratios}:
+\begin{verbatim}
+Response 200:
+{
+  "period": "2026-01",
+  "savings_rate": 0.23,
+  "debt_to_asset_ratio": 0.15,
+  "monthly_cashflow": 1250.00,
+  "expense_to_income_ratio": 0.77,
+  "calculations_date": "2026-01-22T10:00:00Z"
+}
+\end{verbatim}
+
+\subsection{Endpoints de IA}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+POST & /api/ai/parse-receipt & OCR + extracción estructurada \\
+POST & /api/ai/parse-text & NLP texto a transacción \\
+POST & /api/ai/parse-email & Extracción info de email bancario \\
+POST & /api/ai/categorize & Sugerencia de categoría \\
+\bottomrule
+\end{tabular}
+\caption{API de Procesamiento IA}
+\end{table}
+
+\textbf{Ejemplo POST /api/ai/parse-receipt}:
+\begin{verbatim}
+Request:
+{
+  "image_base64": "data:image/jpeg;base64,/9j/4AAQ..."
+}
+
+Response 200:
+{
+  "merchant": "Starbucks",
+  "amount": 12.50,
+  "currency": "USD",
+  "date": "2026-01-22",
+  "category_suggestion": "alimentacion",
+  "confidence": 0.92,
+  "items": ["Cafe Latte", "Croissant"]
+}
+\end{verbatim}
+
+\section{Consideraciones y Manejo de Errores}
+
+\subsection{Requisitos Ambiguos}
+
+\begin{itemize}
+    \item \textbf{Frecuencia de escaneo email}: Se implementa configuración flexible (cada hora, diaria, semanal) con default diario a las 8:00 AM hora local del usuario.
+    \item \textbf{Aprobación de movimientos}: Se requiere aprobación explícita uno por uno o masiva con revisión previa en UI. No hay auto-aprobación automática.
+    \item \textbf{Múltiples cuentas bancarias}: Se permite registro de múltiples activos tipo ``cuenta bancaria'' para distintos bancos/cuentas.
+    \item \textbf{Divisas múltiples}: Se soporta configuración de moneda predeterminada con conversión manual si el usuario registra movimientos en otras divisas.
+\end{itemize}
+
+\subsection{Manejo de Errores Técnicos}
+
+\begin{itemize}
+    \item \textbf{Fallo en OCR}: Si el procesamiento de recibo falla, se permite registro manual con opción de reintentar OCR. Se muestra mensaje claro: ``No se pudo leer el recibo automáticamente. Por favor ingresa los datos manualmente''.
+    \item \textbf{Fallo en Gmail API}: Si el escaneo de email falla (token expirado, API no disponible), se notifica al usuario para re-autorizar la conexión. Se almacenan logs para debugging.
+    \item \textbf{Límites de API IA}: Se implementa queue system para requests de IA. Si se alcanza límite diario de Gemini, se encolan requests para procesamiento al día siguiente con notificación al usuario.
+    \item \textbf{Sincronización offline}: Movimientos creados offline se marcan como ``pending\_sync'' y se sincronizan automáticamente cuando se recupera conexión. Se muestran indicadores visuales de estado de sync.
+    \item \textbf{Errores de validación}: Se validan datos en frontend y backend. Mensajes de error específicos por campo (ej: ``El monto debe ser mayor a 0'', ``Selecciona una categoría válida'').
+\end{itemize}
+
+\subsection{Seguridad y Privacidad}
+
+\begin{itemize}
+    \item \textbf{Autenticación}: Todas las APIs requieren JWT token válido. Row Level Security (RLS) en Supabase garantiza que usuarios solo accedan a sus propios datos.
+    \item \textbf{Datos sensibles}: Tokens de Gmail OAuth se almacenan encriptados. Imágenes de recibos se guardan en storage privado con acceso solo al propietario.
+    \item \textbf{GDPR}: Se implementa endpoint de exportación completa de datos del usuario y eliminación total de cuenta bajo demanda.
+    \item \textbf{Rate limiting}: Se implementa rate limiting en Edge Functions (100 requests/minuto por usuario) para prevenir abuso.
+\end{itemize}
+
+\subsection{Escalabilidad}
+
+\begin{itemize}
+    \item \textbf{Límites tier gratuito}: Con tier gratuito de Supabase y Gemini, la app soporta hasta 200-300 usuarios activos. Más allá, se requiere upgrade a Supabase Pro (\$25/mes) y pago por uso en Gemini.
+    \item \textbf{Optimización de costos IA}: Se cachean sugerencias de categorías comunes. Se agrupan múltiples requests de IA cuando sea posible.
+    \item \textbf{Database indexing}: Se crean índices en campos frecuentemente consultados (user\_id, date, category\_id) para mantener queries rápidas.
+\end{itemize}
+
+\subsection{Testing y Calidad}
+
+\begin{itemize}
+    \item \textbf{Testing}: Unit tests con Jest para lógica de negocio. Integration tests para APIs críticas. E2E tests con Playwright para flujos principales.
+    \item \textbf{Monitoreo}: Sentry para tracking de errores en producción. Logs estructurados en Edge Functions para debugging.
+    \item \textbf{Versionado API}: Se implementa versionado en headers (API-Version: 1.0) para permitir cambios futuros sin romper clientes existentes.
+\end{itemize}
+
+\section{Estructura de Base de Datos}
+
+La base de datos PostgreSQL en Supabase sigue un esquema relacional normalizado optimizado para consultas analíticas:
+
+\subsection{Tablas Principales}
+
+\subsubsection{users}
+\begin{verbatim}
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  full_name VARCHAR(255),
+  avatar_url TEXT,
+  default_currency VARCHAR(3) DEFAULT 'USD',
+  timezone VARCHAR(50) DEFAULT 'UTC',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+\end{verbatim}
+
+\subsubsection{categories}
+\begin{verbatim}
+CREATE TABLE categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(100) NOT NULL,
+  type VARCHAR(20) NOT NULL CHECK (type IN ('income', 'expense')),
+  icon VARCHAR(50),
+  color VARCHAR(7),
+  is_default BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, name, type)
+);
+
+CREATE INDEX idx_categories_user ON categories(user_id);
+\end{verbatim}
+
+\subsubsection{transactions}
+\begin{verbatim}
+CREATE TABLE transactions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  type VARCHAR(20) NOT NULL CHECK (type IN ('income', 'expense')),
+  amount DECIMAL(15,2) NOT NULL CHECK (amount > 0),
+  currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+  date DATE NOT NULL,
+  category_id UUID REFERENCES categories(id),
+  description TEXT,
+  payment_method VARCHAR(50),
+  receipt_image_url TEXT,
+  source VARCHAR(20) DEFAULT 'manual' 
+    CHECK (source IN ('manual', 'ocr', 'nlp', 'email')),
+  is_recurring BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_transactions_user_date ON transactions(user_id, date DESC);
+CREATE INDEX idx_transactions_category ON transactions(category_id);
+CREATE INDEX idx_transactions_type ON transactions(type);
+\end{verbatim}
+
+\subsubsection{assets}
+\begin{verbatim}
+CREATE TABLE assets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL 
+    CHECK (type IN ('bank_account', 'investment', 'property', 'other')),
+  current_value DECIMAL(15,2) NOT NULL,
+  currency VARCHAR(3) DEFAULT 'USD',
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_assets_user ON assets(user_id);
+\end{verbatim}
+
+\subsubsection{liabilities}
+\begin{verbatim}
+CREATE TABLE liabilities (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL 
+    CHECK (type IN ('loan', 'credit_card', 'mortgage', 'other')),
+  current_balance DECIMAL(15,2) NOT NULL,
+  currency VARCHAR(3) DEFAULT 'USD',
+  interest_rate DECIMAL(5,2),
+  due_date DATE,
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_liabilities_user ON liabilities(user_id);
+\end{verbatim}
+
+\subsubsection{budgets}
+\begin{verbatim}
+CREATE TABLE budgets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  period_type VARCHAR(20) NOT NULL 
+    CHECK (period_type IN ('daily', 'weekly', 'monthly', 'yearly')),
+  amount DECIMAL(15,2) NOT NULL CHECK (amount > 0),
+  currency VARCHAR(3) DEFAULT 'USD',
+  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  start_date DATE NOT NULL,
+  end_date DATE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_budgets_user_active ON budgets(user_id, is_active);
+CREATE INDEX idx_budgets_period ON budgets(period_type, start_date);
+\end{verbatim}
+
+\subsubsection{financial\_goals}
+\begin{verbatim}
+CREATE TABLE financial_goals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  target_amount DECIMAL(15,2) NOT NULL CHECK (target_amount > 0),
+  current_amount DECIMAL(15,2) DEFAULT 0,
+  currency VARCHAR(3) DEFAULT 'USD',
+  target_date DATE,
+  description TEXT,
+  is_completed BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_goals_user ON financial_goals(user_id, is_completed);
+\end{verbatim}
+
+\subsubsection{email\_integrations}
+\begin{verbatim}
+CREATE TABLE email_integrations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  email_provider VARCHAR(50) DEFAULT 'gmail',
+  email_address VARCHAR(255) NOT NULL,
+  access_token_encrypted TEXT NOT NULL,
+  refresh_token_encrypted TEXT,
+  scan_schedule VARCHAR(20) DEFAULT 'daily',
+  last_scan_at TIMESTAMPTZ,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, email_provider)
+);
+
+CREATE INDEX idx_email_integrations_user ON email_integrations(user_id);
+\end{verbatim}
+
+\subsubsection{pending\_transactions}
+\begin{verbatim}
+CREATE TABLE pending_transactions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  email_integration_id UUID REFERENCES email_integrations(id),
+  type VARCHAR(20) NOT NULL,
+  amount DECIMAL(15,2) NOT NULL,
+  currency VARCHAR(3) DEFAULT 'USD',
+  date DATE NOT NULL,
+  category_id UUID REFERENCES categories(id),
+  description TEXT,
+  source_email_subject TEXT,
+  source_email_date TIMESTAMPTZ,
+  confidence_score DECIMAL(3,2),
+  status VARCHAR(20) DEFAULT 'pending' 
+    CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_pending_trans_user_status 
+  ON pending_transactions(user_id, status);
+\end{verbatim}
+
+\subsubsection{ai\_recommendations}
+\begin{verbatim}
+CREATE TABLE ai_recommendations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  recommendation_type VARCHAR(50) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  priority VARCHAR(20) DEFAULT 'medium' 
+    CHECK (priority IN ('low', 'medium', 'high')),
+  is_read BOOLEAN DEFAULT FALSE,
+  is_dismissed BOOLEAN DEFAULT FALSE,
+  generated_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_recommendations_user 
+  ON ai_recommendations(user_id, is_dismissed, is_read);
+\end{verbatim}
+
+\subsection{Vistas Materializadas para Analytics}
+
+\subsubsection{monthly\_summary}
+\begin{verbatim}
+CREATE MATERIALIZED VIEW monthly_summary AS
+SELECT 
+  user_id,
+  DATE_TRUNC('month', date) as month,
+  SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) 
+    as total_income,
+  SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) 
+    as total_expenses,
+  SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END) 
+    as net_cashflow,
+  COUNT(*) as transaction_count
+FROM transactions
+GROUP BY user_id, DATE_TRUNC('month', date);
+
+CREATE UNIQUE INDEX idx_monthly_summary_user_month 
+  ON monthly_summary(user_id, month);
+\end{verbatim}
+
+\subsection{Row Level Security (RLS)}
+
+Todas las tablas implementan RLS para garantizar aislamiento de datos:
+
+\begin{verbatim}
+-- Ejemplo para transactions
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own transactions"
+  ON transactions FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own transactions"
+  ON transactions FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own transactions"
+  ON transactions FOR UPDATE
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own transactions"
+  ON transactions FOR DELETE
+  USING (auth.uid() = user_id);
+\end{verbatim}
+
+\section{Estructura de Vistas y Pantallas de la PWA}
+
+La arquitectura de navegación sigue un patrón de tabs principales con sub-navegación jerárquica:
+
+\subsection{Navegación Principal (Bottom Navigation)}
+
+\begin{enumerate}
+  \item \textbf{Home/Dashboard}
+  \item \textbf{Transacciones}
+  \item \textbf{Presupuestos}
+  \item \textbf{Insights}
+  \item \textbf{Perfil}
+\end{enumerate}
+
+\subsection{Flujo de Pantallas Detallado}
+
+\subsubsection{Autenticación y Onboarding (Auth \& Onboarding Flow)}
+
+\begin{itemize}
+  \item \textbf{Splash Screen (Primera carga)}
+    \begin{itemize}
+      \item Logo de Fintrack centrado con animación de fade-in
+      \item Loading spinner sutil debajo del logo
+      \item Verificación de autenticación en background
+      \item Duración: 1.5-2 segundos
+      \item Transición suave a Welcome o Dashboard según estado de autenticación
+    \end{itemize}
+  
+  \item \textbf{Welcome Screen (Primera vez)}
+    \begin{itemize}
+      \item Hero visual con ilustración de finanzas personales
+      \item Título: "Bienvenido a Fintrack"
+      \item Subtítulo: "Toma control total de tus finanzas personales"
+      \item Botón principal: "Comenzar" (CTA destacado)
+      \item Link inferior: "Ya tengo cuenta - Iniciar sesión"
+      \item Indicadores de valor: "Seguro • Privado • Fácil de usar"
+    \end{itemize}
+  
+  \item \textbf{Onboarding Slides (Carrusel de 3 slides)}
+    \begin{itemize}
+      \item \textbf{Slide 1: Registro Inteligente}
+        \begin{itemize}
+          \item Ilustración: Teléfono escaneando recibo
+          \item Título: "Registra tus gastos en segundos"
+          \item Descripción: "Escanea recibos, usa texto natural o conecta tu email. Fintrack hace el trabajo pesado por ti."
+        \end{itemize}
+      
+      \item \textbf{Slide 2: Control Total}
+        \begin{itemize}
+          \item Ilustración: Dashboard con gráficos
+          \item Título: "Visualiza tu salud financiera"
+          \item Descripción: "Presupuestos inteligentes, seguimiento de metas y análisis detallados de tus finanzas."
+        \end{itemize}
+      
+      \item \textbf{Slide 3: Insights con IA}
+        \begin{itemize}
+          \item Ilustración: Robot/IA con estadísticas
+          \item Título: "Recomendaciones personalizadas"
+          \item Descripción: "Recibe consejos inteligentes basados en tus hábitos para alcanzar tus objetivos financieros."
+        \end{itemize}
+      
+      \item Navegación: Dots indicator + botón "Siguiente"
+      \item Último slide: Botón "Crear mi cuenta"
+      \item Todas las slides: Link "Saltar" en esquina superior derecha
+    \end{itemize}
+  
+  \item \textbf{Registro (Sign Up)}
+    \begin{itemize}
+      \item Header con botón volver atrás
+      \item Título: "Crea tu cuenta"
+      \item Campo: Nombre completo (validación: mínimo 2 palabras)
+      \item Campo: Email (validación en tiempo real)
+      \item Campo: Contraseña (indicador de fortaleza visual)
+      \item Campo: Confirmar contraseña
+      \item Checkbox: "Acepto términos y condiciones" (obligatorio)
+      \item Botón principal: "Crear cuenta"
+      \item Divisor visual con texto "o continúa con"
+      \item Botones OAuth:
+        \begin{itemize}
+          \item Google (icono + "Continuar con Google")
+          \item Apple (icono + "Continuar con Apple")
+        \end{itemize}
+      \item Link inferior: "¿Ya tienes cuenta? Inicia sesión"
+      \item Mensajes de error inline por campo
+    \end{itemize}
+  
+  \item \textbf{Login (Sign In)}
+    \begin{itemize}
+      \item Header con botón volver atrás
+      \item Título: "¡Bienvenido de nuevo!"
+      \item Campo: Email
+      \item Campo: Contraseña con toggle mostrar/ocultar
+      \item Checkbox: "Recordarme"
+      \item Link: "¿Olvidaste tu contraseña?" (alineado a la derecha)
+      \item Botón principal: "Iniciar sesión"
+      \item Divisor visual con texto "o continúa con"
+      \item Botones OAuth (Google, Apple)
+      \item Link inferior: "¿No tienes cuenta? Regístrate"
+      \item Loading state en botón durante autenticación
+      \item Error toast si credenciales incorrectas
+    \end{itemize}
+  
+  \item \textbf{Recuperación de Contraseña (Password Recovery)}
+    \begin{itemize}
+      \item Header con botón volver atrás
+      \item Título: "Recupera tu contraseña"
+      \item Ilustración: Sobre de email
+      \item Descripción: "Ingresa tu email y te enviaremos instrucciones para restablecer tu contraseña"
+      \item Campo: Email
+      \item Botón: "Enviar instrucciones"
+      \item Success screen tras envío:
+        \begin{itemize}
+          \item Checkmark animado
+          \item Mensaje: "Email enviado"
+          \item Descripción: "Revisa tu bandeja de entrada y sigue las instrucciones"
+          \item Botón: "Volver al inicio de sesión"
+          \item Link: "¿No recibiste el email? Reenviar"
+        \end{itemize}
+    \end{itemize}
+  
+  \item \textbf{Onboarding Setup (Configuración Inicial - Post Registro)}
+    \begin{itemize}
+      \item \textbf{Paso 1/4: Bienvenida Personalizada}
+        \begin{itemize}
+          \item Título: "¡Hola [Nombre]!"
+          \item Subtítulo: "Vamos a configurar tu perfil financiero"
+          \item Progress bar: 25\% completado
+          \item Botón: "Continuar"
+        \end{itemize}
+      
+      \item \textbf{Paso 2/4: Configuración de Moneda}
+        \begin{itemize}
+          \item Título: "¿Cuál es tu moneda principal?"
+          \item Dropdown/Selector con búsqueda de monedas
+          \item Monedas destacadas: USD, EUR, PEN, MXN, etc.
+          \item Preview: "Ejemplo: \$1,234.56 USD"
+          \item Progress bar: 50\%
+          \item Botones: "Atrás" y "Siguiente"
+        \end{itemize}
+      
+      \item \textbf{Paso 3/4: Categorías Favoritas}
+        \begin{itemize}
+          \item Título: "Selecciona tus categorías de gasto más comunes"
+          \item Subtítulo: "Puedes agregar más después"
+          \item Grid de categorías con iconos y nombres:
+            \begin{itemize}
+              \item Alimentación, Transporte, Vivienda
+              \item Entretenimiento, Salud, Educación
+              \item Servicios, Compras, Otros
+            \end{itemize}
+          \item Interacción: Tap para seleccionar (efecto visual)
+          \item Mínimo 3 categorías seleccionadas para continuar
+          \item Progress bar: 75\%
+          \item Botones: "Atrás" y "Siguiente"
+        \end{itemize}
+      
+      \item \textbf{Paso 4/4: Configuración de Notificaciones}
+        \begin{itemize}
+          \item Título: "¿Quieres recibir notificaciones?"
+          \item Lista de toggles:
+            \begin{itemize}
+              \item "Alertas de presupuesto" (recomendado)
+              \item "Recordatorios de metas"
+              \item "Resumen semanal"
+              \item "Recomendaciones de IA"
+            \end{itemize}
+          \item Nota: "Puedes cambiar esto después en configuración"
+          \item Progress bar: 100\%
+          \item Botón principal: "Comenzar a usar Fintrack"
+        \end{itemize}
+      
+      \item \textbf{Success Screen (Configuración Completa)}
+        \begin{itemize}
+          \item Animación celebratoria (confetti o checkmark)
+          \item Título: "¡Todo listo!"
+          \item Mensaje: "Tu perfil financiero está configurado"
+          \item Botón: "Ir al Dashboard"
+          \item Auto-redirect tras 2 segundos
+        \end{itemize}
+    \end{itemize}
+  
+  \item \textbf{Verificación de Email (Opcional)}
+    \begin{itemize}
+      \item Banner superior en Dashboard si email no verificado
+      \item Mensaje: "Verifica tu email para desbloquear todas las funciones"
+      \item Botón: "Enviar email de verificación"
+      \item Puede ser omitido temporalmente con "X"
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tab 1: Home/Dashboard}
+
+\begin{itemize}
+  \item \textbf{Dashboard Principal}
+    \begin{itemize}
+      \item Header con saludo personalizado + foto perfil
+      \item Card de resumen del mes actual (ingresos, egresos, balance)
+      \item Gráfico de flujo de caja últimos 6 meses (line chart)
+      \item Lista de transacciones recientes (últimas 5)
+      \item FAB (Floating Action Button) para agregar transacción rápida
+      \item Widget de patrimonio neto actual
+      \item Notificaciones/alertas pendientes (badge)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tab 2: Transacciones}
+
+\begin{itemize}
+  \item \textbf{Lista de Transacciones}
+    \begin{itemize}
+      \item Filtros superiores (fecha, tipo, categoría, monto)
+      \item Lista agrupada por fecha (hoy, ayer, esta semana, etc.)
+      \item Cada item muestra: icono categoría, descripción, monto, fecha
+      \item Swipe actions: editar, eliminar
+      \item FAB con menú desplegable: agregar manual, escanear recibo, texto natural
+      \item Búsqueda por descripción
+    \end{itemize}
+  
+  \item \textbf{Agregar Transacción Manual}
+    \begin{itemize}
+      \item Toggle ingreso/egreso
+      \item Input de monto (numpad grande)
+      \item Selector de fecha (date picker)
+      \item Selector de categoría (grid con iconos)
+      \item Campo descripción (opcional)
+      \item Selector método de pago
+      \item Botón adjuntar imagen
+      \item Botón guardar
+    \end{itemize}
+  
+  \item \textbf{Escanear Recibo (OCR)}
+    \begin{itemize}
+      \item Vista de cámara con overlay guía
+      \item Captura de foto
+      \item Preview con loading mientras procesa
+      \item Formulario pre-llenado con datos extraídos
+      \item Indicador de confianza de OCR
+      \item Botón confirmar/editar
+    \end{itemize}
+  
+  \item \textbf{Entrada de Texto Natural}
+    \begin{itemize}
+      \item Text area grande con placeholder ejemplos
+      \item Botón procesar con loading
+      \item Confirmación de datos interpretados
+      \item Sugerencia de categoría por IA
+    \end{itemize}
+  
+  \item \textbf{Detalle de Transacción}
+    \begin{itemize}
+      \item Todos los campos en modo lectura
+      \item Imagen del recibo (si existe) con zoom
+      \item Botón editar
+      \item Botón eliminar con confirmación
+      \item Metadata: fecha creación, fuente (manual/OCR/email)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tab 3: Presupuestos}
+
+\begin{itemize}
+  \item \textbf{Vista Principal Presupuestos}
+    \begin{itemize}
+      \item Tabs secundarios: Diario, Semanal, Mensual, Anual
+      \item Cards de presupuestos activos con progress bar circular
+      \item Indicador visual: verde (<80\%), amarillo (80-100\%), rojo (>100\%)
+      \item FAB para crear nuevo presupuesto
+      \item Opción ver presupuestos vencidos/inactivos
+    \end{itemize}
+  
+  \item \textbf{Crear/Editar Presupuesto}
+    \begin{itemize}
+      \item Nombre del presupuesto
+      \item Selector de período (diario/semanal/mensual/anual)
+      \item Input de monto
+      \item Selector de categoría (opcional, si no selecciona = presupuesto total)
+      \item Date picker fecha inicio
+      \item Toggle repetir automáticamente
+      \item Configuración de alertas (80\%, 100\%)
+    \end{itemize}
+  
+  \item \textbf{Detalle de Presupuesto}
+    \begin{itemize}
+      \item Progress bar grande con porcentaje
+      \item Monto gastado vs monto total
+      \item Proyección: "A este ritmo terminarás el presupuesto en X días"
+      \item Lista de transacciones asociadas a este presupuesto
+      \item Gráfico de gasto diario vs promedio permitido
+      \item Botones: editar, eliminar, pausar
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tab 4: Insights}
+
+\begin{itemize}
+  \item \textbf{Dashboard de Insights}
+    \begin{itemize}
+      \item Selector de período (mes, trimestre, año, personalizado)
+      \item Card de ratios financieros principales:
+        \begin{itemize}
+          \item Tasa de ahorro
+          \item Ratio de endeudamiento
+          \item Flujo de caja mensual
+        \end{itemize}
+      \item Gráfico pie chart de distribución de gastos por categoría
+      \item Gráfico de tendencia de gastos (últimos 6 meses)
+      \item Top 5 categorías de mayor gasto
+      \item Comparación mes actual vs mes anterior
+    \end{itemize}
+  
+  \item \textbf{Recomendaciones IA}
+    \begin{itemize}
+      \item Lista de cards con recomendaciones priorizadas
+      \item Cada card muestra: título, descripción, prioridad (color), icono
+      \item Actions: marcar como leída, descartar, ver detalle
+      \item Filtros: no leídas, prioridad alta
+    \end{itemize}
+  
+  \item \textbf{Predicciones}
+    \begin{itemize}
+      \item Gráfico con proyección de gastos próximos 3 meses
+      \item Alertas predictivas: "Podrías exceder tu presupuesto de X"
+      \item Predicción de alcance de metas financieras
+    \end{itemize}
+  
+  \item \textbf{Exportar Reportes}
+    \begin{itemize}
+      \item Selector de período
+      \item Checkbox de secciones a incluir (transacciones, presupuestos, etc.)
+      \item Botón generar PDF con loading
+      \item Opción compartir o descargar
+    \end{itemize}
+  
+  \item \textbf{Activos y Pasivos}
+    \begin{itemize}
+      \item Card de patrimonio neto total destacado
+      \item Lista de activos con valores actuales
+      \item Lista de pasivos con saldos pendientes
+      \item Gráfico de evolución de patrimonio neto (últimos 12 meses)
+      \item FAB para agregar activo/pasivo
+    \end{itemize}
+  
+  \item \textbf{Metas Financieras}
+    \begin{itemize}
+      \item Lista de metas activas con progress bar
+      \item Cada meta muestra: nombre, monto actual/objetivo, fecha límite, \% progreso
+      \item Indicador visual de proyección (alcanzable, en riesgo, excedido)
+      \item FAB crear nueva meta
+    \end{itemize}
+  
+  \item \textbf{Detalle de Meta}
+    \begin{itemize}
+      \item Progress circular grande
+      \item Desglose: monto ahorrado, faltante, días restantes
+      \item Cálculo: "Necesitas ahorrar \$X por mes para cumplir la meta"
+      \item Timeline de aportaciones realizadas
+      \item Botón agregar aportación manual
+      \item Gráfico de proyección vs real
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tab 5: Perfil}
+
+\begin{itemize}
+  \item \textbf{Vista de Perfil}
+    \begin{itemize}
+      \item Header con foto, nombre, email
+      \item Secciones con iconos:
+        \begin{itemize}
+          \item Configuración de cuenta
+          \item Categorías personalizadas
+          \item Sincronización de email
+          \item Preferencias de la app
+          \item Seguridad y privacidad
+          \item Ayuda y soporte
+          \item Acerca de Fintrack
+          \item Cerrar sesión
+        \end{itemize}
+    \end{itemize}
+  
+  \item \textbf{Configuración de Cuenta}
+    \begin{itemize}
+      \item Editar nombre completo
+      \item Cambiar foto de perfil
+      \item Cambiar contraseña
+      \item Configurar moneda predeterminada
+      \item Configurar zona horaria
+    \end{itemize}
+  
+  \item \textbf{Categorías Personalizadas}
+    \begin{itemize}
+      \item Lista de categorías (predeterminadas en gris, personalizadas editables)
+      \item Cada item: icono, nombre, tipo (ingreso/egreso), color
+      \item FAB para crear nueva categoría
+      \item Swipe para editar/eliminar (solo personalizadas)
+    \end{itemize}
+  
+  \item \textbf{Sincronización de Email}
+    \begin{itemize}
+      \item Status de conexión (conectado/desconectado)
+      \item Email conectado actual
+      \item Configuración de frecuencia de escaneo
+      \item Última fecha de escaneo
+      \item Botón conectar/desconectar Gmail
+      \item Botón escanear ahora (manual)
+      \item Lista de movimientos pendientes de aprobación con badge
+    \end{itemize}
+  
+  \item \textbf{Movimientos Pendientes Email}
+    \begin{itemize}
+      \item Lista de transacciones detectadas en emails
+      \item Cada item: fecha, monto, descripción, categoría sugerida, confianza
+      \item Actions por item: aprobar (check), rechazar (X), editar
+      \item Botón aprobar seleccionados (múltiple)
+      \item Filtros: solo alta confianza, por tipo
+    \end{itemize}
+  
+  \item \textbf{Preferencias de la App}
+    \begin{itemize}
+      \item Toggle modo oscuro/claro
+      \item Configuración de notificaciones push
+      \item Idioma de la app
+      \item Formato de fecha y moneda
+    \end{itemize}
+  
+  \item \textbf{Seguridad y Privacidad}
+    \begin{itemize}
+      \item Habilitar autenticación biométrica
+      \item Gestión de sesiones activas
+      \item Exportar todos mis datos (GDPR)
+      \item Eliminar mi cuenta (con confirmación doble)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Componentes Transversales}
+
+\begin{itemize}
+  \item \textbf{Modal de Agregar Rápido (FAB)}
+    \begin{itemize}
+      \item Botón flotante persistente en esquina inferior derecha
+      \item Al presionar despliega menú radial con opciones:
+        \begin{itemize}
+          \item Ingreso rápido
+          \item Egreso rápido
+          \item Escanear recibo
+          \item Texto natural
+        \end{itemize}
+    \end{itemize}
+  
+  \item \textbf{Notificaciones In-App}
+    \begin{itemize}
+      \item Toast notifications para confirmaciones
+      \item Banner persistente para alertas de presupuesto
+      \item Modal para aprobar movimientos de email detectados
+    \end{itemize}
+  
+  \item \textbf{Bottom Sheet}
+    \begin{itemize}
+      \item Usado para filtros avanzados
+      \item Selección de categorías
+      \item Confirmaciones de eliminación
+    \end{itemize}
+  
+  \item \textbf{Skeleton Loaders}
+    \begin{itemize}
+      \item Placeholders animados durante carga de datos
+      \item Mejora percepción de velocidad
+    \end{itemize}
+\end{itemize}
+
+\subsection{Diseño Responsive}
+
+\begin{itemize}
+  \item \textbf{Mobile (< 640px)}: Navigation bottom tabs, stack layout, swipe gestures
+  \item \textbf{Tablet (640-1024px)}: Sidebar navigation, grid de 2 columnas para cards
+  \item \textbf{Desktop (> 1024px)}: Sidebar persistente, dashboard en grid 3 columnas, charts más grandes
+\end{itemize}
+
+\subsection{Modo Offline}
+
+\begin{itemize}
+  \item Banner superior indica "Sin conexión - Los cambios se sincronizarán"
+  \item Transacciones creadas offline se marcan con icono de sincronización pendiente
+  \item Al recuperar conexión, sincronización automática con indicador de progreso
+  \item Caché de últimos 30 días de transacciones para visualización offline
+\end{itemize}
+
+\end{document}
