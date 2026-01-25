@@ -1,10 +1,11 @@
 "use server";
 
-import { supabase } from "@/supabase/client";
+import { createClient } from "@/supabase/server";
 import { CategoryInput } from "@/lib/validations/category";
 import { revalidatePath } from "next/cache";
 
 export async function createCategory(data: CategoryInput) {
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No hay sesión activa");
 
@@ -23,6 +24,7 @@ export async function createCategory(data: CategoryInput) {
 }
 
 export async function updateCategory(id: string, data: CategoryInput) {
+    const supabase = await createClient();
     const { error } = await supabase
         .from('categories')
         .update({
@@ -38,6 +40,7 @@ export async function updateCategory(id: string, data: CategoryInput) {
 }
 
 export async function getCategories() {
+    const supabase = await createClient();
     const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -48,6 +51,7 @@ export async function getCategories() {
 }
 
 export async function deleteCategory(id: string) {
+    const supabase = await createClient();
     const { error } = await supabase
         .from('categories')
         .delete()

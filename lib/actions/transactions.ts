@@ -1,10 +1,11 @@
 "use server";
 
-import { supabase } from "@/supabase/client";
+import { createClient } from "@/supabase/server";
 import { TransactionInput } from "@/lib/validations/transaction";
 import { revalidatePath } from "next/cache";
 
 export async function createTransaction(data: TransactionInput) {
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No hay sesión activa");
 
@@ -25,6 +26,7 @@ export async function createTransaction(data: TransactionInput) {
 }
 
 export async function updateTransaction(id: string, data: TransactionInput) {
+    const supabase = await createClient();
     const { error } = await supabase
         .from('transactions')
         .update({
@@ -42,6 +44,7 @@ export async function updateTransaction(id: string, data: TransactionInput) {
 }
 
 export async function deleteTransaction(id: string) {
+    const supabase = await createClient();
     const { error } = await supabase
         .from('transactions')
         .delete()
@@ -52,6 +55,7 @@ export async function deleteTransaction(id: string) {
 }
 
 export async function getTransactions() {
+    const supabase = await createClient();
     const { data, error } = await supabase
         .from('transactions')
         .select(`
