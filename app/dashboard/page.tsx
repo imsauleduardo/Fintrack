@@ -5,17 +5,18 @@ import { LogOut, Loader2, Trash2, Edit2, Calendar, Mail, RefreshCcw, Bell } from
 import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from "@/lib/actions/transactions";
 import { parseTransactionText } from "@/lib/actions/ai";
 import { getGoogleAuthUrl } from "@/lib/actions/gmail";
-import { getPotentialEmails, processSelectedEmails } from "@/lib/actions/gmail-sync"; // Nuevas acciones
+import { getPotentialEmails, processSelectedEmails } from "@/lib/actions/gmail-sync";
 import { getPendingTransactions } from "@/lib/actions/pending";
 import { TransactionInput } from "@/lib/validations/transaction";
 import FAB from "@/components/ui/FAB";
 import Modal from "@/components/ui/Modal";
 import Toast from "@/components/ui/Toast";
+import StatsSummary from "@/components/features/dashboard/StatsSummary"; // Nuevo import
 import TransactionForm from "@/components/features/transactions/TransactionForm";
 import AITransactionInput from "@/components/features/transactions/AITransactionInput";
 import VoiceRecorder from "@/components/features/transactions/VoiceRecorder";
 import ReceiptScanner from "@/components/features/transactions/ReceiptScanner";
-import GmailMessagePicker from "@/components/features/transactions/GmailMessagePicker"; // Nuevo componente
+import GmailMessagePicker from "@/components/features/transactions/GmailMessagePicker";
 import * as Icons from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { es } from "date-fns/locale";
@@ -58,7 +59,6 @@ export default function DashboardPage() {
         }
     };
 
-    // NUEVO: Flujo de sincronización interactiva
     const handleStartSync = async () => {
         setIsSyncing(true);
         try {
@@ -183,6 +183,9 @@ export default function DashboardPage() {
                 </div>
             </header>
 
+            {/* Nuevo Componente de Estadísticas */}
+            {!isLoading && <StatsSummary transactions={transactions} />}
+
             <AnimatePresence>
                 {pendingCount > 0 && (
                     <motion.div
@@ -256,18 +259,8 @@ export default function DashboardPage() {
 
             <FAB onAction={handleFABAction} />
 
-            {/* Modal de Sincronización Interactiva */}
-            <Modal
-                isOpen={showSyncModal}
-                onClose={() => setShowSyncModal(false)}
-                title="Sincronizar Gmail"
-            >
-                <GmailMessagePicker
-                    emails={potentialEmails}
-                    onProcess={handleProcessEmails}
-                    onCancel={() => setShowSyncModal(false)}
-                    isProcessing={isSyncing}
-                />
+            <Modal isOpen={showSyncModal} onClose={() => setShowSyncModal(false)} title="Sincronizar Gmail">
+                <GmailMessagePicker emails={potentialEmails} onProcess={handleProcessEmails} onCancel={() => setShowSyncModal(false)} isProcessing={isSyncing} />
             </Modal>
 
             <Modal isOpen={showModal} onClose={handleCloseModal} title={editingTransaction ? "Editar" : "Nuevo"}>

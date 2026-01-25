@@ -30,9 +30,9 @@ export default function PendingPage() {
             await approvePendingTransaction(p.id, {
                 amount: p.amount,
                 description: p.description,
-                category_id: p.category_hint, // Usamos el ID que sugirió Gemini
-                date: p.date,
-                type: p.type,
+                category_id: p.category_id,
+                date: p.date || new Date().toISOString().split('T')[0], // Triple seguro: Fallback si la fila ya era null
+                type: p.type || 'expense',
                 payment_method: "Email Sync"
             });
             setToast({ message: "Movimiento aprobado", type: 'success' });
@@ -48,11 +48,22 @@ export default function PendingPage() {
         setProcessingId(id);
         try {
             await rejectPendingTransaction(id);
+            setToast({ message: "Movimiento descartado", type: 'success' });
             setPendings(prev => prev.filter(item => item.id !== id));
         } catch (error: any) {
             setToast({ message: error.message, type: 'error' });
         } finally {
             setProcessingId(null);
+        }
+    };
+
+    const formatDate = (dateStr: string) => {
+        try {
+            const date = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
+            if (isNaN(date.getTime())) return "Pendiente";
+            return format(date, "d MMM", { locale: es });
+        } catch (e) {
+            return "Pendiente";
         }
     };
 
@@ -94,7 +105,7 @@ export default function PendingPage() {
                                     </div>
                                     <div className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-bold uppercase tracking-widest border border-blue-500/20 flex items-center gap-2">
                                         <Calendar className="w-3 h-3" />
-                                        {format(new Date(p.date + 'T00:00:00'), "d MMM", { locale: es })}
+                                        {formatDate(p.date)}
                                     </div>
                                 </div>
 
