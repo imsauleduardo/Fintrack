@@ -8,8 +8,13 @@ import { createClient } from "@/supabase/server";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 async function getGmailClient(supabase: any, userId: string) {
-    const { data: tokenData } = await supabase.from("gmail_tokens").select("*").eq("user_id", userId).single();
-    if (!tokenData) throw new Error("Gmail no conectado");
+    const { data: tokenData, error: fetchError } = await supabase
+        .from("gmail_tokens")
+        .select("*")
+        .eq("user_id", userId)
+        .single();
+
+    if (fetchError || !tokenData) throw new Error("Gmail no conectado");
 
     const oauth2Client = new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT_ID,
@@ -23,15 +28,42 @@ async function getGmailClient(supabase: any, userId: string) {
         expiry_date: tokenData.expiry_date,
     });
 
+    oauth2Client.on("tokens", async (tokens) => {
+        const updateData: any = {
+            access_token: tokens.access_token,
+            expiry_date: tokens.expiry_date,
+        };
+        if (tokens.refresh_token) {
+            updateData.refresh_token = tokens.refresh_token;
+        }
+
+        await supabase
+            .from("gmail_tokens")
+            .update(updateData)
+            .eq("user_id", userId);
+    });
+
     return google.gmail({ version: "v1", auth: oauth2Client });
 }
 
-export async function getPotentialEmails() {
+export async function getPotentialEmails(userId?: string) {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado");
+    let targetUserId = userId;
 
-    const gmail = await getGmailClient(supabase, user.id);
+    if (!targetUserId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("No autenticado");
+        targetUserId = user.id;
+    }
+
+    const gmail = await getGmailClient(supabase, targetUserId);
+
+    // Marcamos el intento de escaneo en la base de datos
+    await supabase
+        .from("gmail_tokens")
+        .update({ last_sync_at: new Date().toISOString() })
+        .eq("user_id", targetUserId);
+
     const query = 'after:' + Math.floor(Date.now() / 1000 - 30 * 24 * 60 * 60) + ' ("$" OR "€" OR "total" OR "pago" OR "compra" OR "transferencia" OR "sent money" OR "has enviado" OR "recibo" OR "ticket" OR "order" OR "pedido" OR "banco" OR "bank")';
 
     const response = await gmail.users.messages.list({ userId: "me", q: query, maxResults: 50 });
@@ -45,7 +77,7 @@ export async function getPotentialEmails() {
         const date = fullMsg.data.internalDate || "";
 
         messages.push({
-            id: msg.id,
+            id: msg.id || "",
             subject,
             snippet,
             date: date ? parseInt(date) : Date.now()
@@ -54,23 +86,24 @@ export async function getPotentialEmails() {
     return messages;
 }
 
-export async function processSelectedEmails(messageIds: string[]) {
-    console.log("--- Procesando correos seleccionados ---");
-
+export async function processSelectedEmails(messageIds: string[], userId?: string) {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error("No autenticado");
+    let targetUserId = userId;
 
-    console.log("Cargando datos para usuario:", user.email);
+    if (!targetUserId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("No autenticado");
+        targetUserId = user.id;
+    }
 
-    const gmail = await getGmailClient(supabase, user.id);
+    const gmail = await getGmailClient(supabase, targetUserId);
     const categories = await getCategories();
     const categoriesLabels = categories.map(c => `- ${c.name} (ID: ${c.id})`).join("\n");
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     let count = 0;
     for (const id of messageIds) {
-        console.log(`> Leyendo correo ID: ${id}`);
+        if (!id) continue;
         const fullMsg = await gmail.users.messages.get({ userId: "me", id });
 
         let body = fullMsg.data.snippet || "";
@@ -106,8 +139,6 @@ export async function processSelectedEmails(messageIds: string[]) {
         try {
             const result = await model.generateContent(prompt);
             let text = result.response.text();
-
-            // Limpiar Markdown si la IA lo incluyó
             text = text.replace(/```json/g, "").replace(/```/g, "").trim();
 
             const start = text.indexOf('{');
@@ -115,38 +146,24 @@ export async function processSelectedEmails(messageIds: string[]) {
 
             if (start !== -1) {
                 const data = JSON.parse(text.substring(start, end));
-
-                // VALIDACIÓN Y FALLBACKS
                 const amount = parseFloat(data.amount);
-                if (isNaN(amount) || amount <= 0) {
-                    console.log(`  -> Salteado: Monto inválido (${data.amount})`);
-                    continue;
-                }
+                if (isNaN(amount) || amount <= 0) continue;
 
-                // Si la IA no dio fecha, usamos la del correo
                 const emailDate = fullMsg.data.internalDate ? new Date(parseInt(fullMsg.data.internalDate)).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
-                const finalDate = data.date || emailDate;
 
-                const { error } = await supabase.from("pending_transactions").upsert({
-                    user_id: user.id,
+                await supabase.from("pending_transactions").upsert({
+                    user_id: targetUserId,
                     ...data,
                     amount: amount,
-                    date: finalDate, // Aseguramos que nunca sea null
+                    date: data.date || emailDate,
                     status: 'pending'
                 }, { onConflict: 'source_email_id' });
 
-                if (error) {
-                    console.error("  Error de Supabase:", error.message);
-                } else {
-                    console.log("  ¡Guardado con éxito en DB!");
-                    count++;
-                }
+                count++;
             }
-        } catch (e: any) {
-            console.error("  Error procesando:", e.message);
+        } catch (e) {
             continue;
         }
     }
-    console.log(`--- Fin. Se procesaron ${count} movimientos ---`);
     return { count };
 }

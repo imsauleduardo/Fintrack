@@ -11,7 +11,9 @@ import { TransactionInput } from "@/lib/validations/transaction";
 import FAB from "@/components/ui/FAB";
 import Modal from "@/components/ui/Modal";
 import Toast from "@/components/ui/Toast";
-import StatsSummary from "@/components/features/dashboard/StatsSummary"; // Nuevo import
+import StatsSummary from "@/components/features/dashboard/StatsSummary";
+import BudgetWidget from "@/components/features/budgets/BudgetWidget";
+import NetWorthCard from "@/components/features/dashboard/NetWorthCard"; // Importamos el nuevo componente
 import TransactionForm from "@/components/features/transactions/TransactionForm";
 import AITransactionInput from "@/components/features/transactions/AITransactionInput";
 import VoiceRecorder from "@/components/features/transactions/VoiceRecorder";
@@ -22,6 +24,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import BudgetAlertBanner from "@/components/features/budgets/BudgetAlertBanner";
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState<any[]>([]);
@@ -157,7 +160,12 @@ export default function DashboardPage() {
         <div className="min-h-screen bg-black text-white p-6 pb-32 max-w-2xl mx-auto">
             <header className="flex justify-between items-center mb-10">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20">S</div>
+                    <div
+                        onClick={() => router.push('/dashboard/profile')}
+                        className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center font-bold text-xl shadow-lg shadow-blue-500/20 cursor-pointer active:scale-95 transition-all"
+                    >
+                        S
+                    </div>
                     <div>
                         <h1 className="text-xs text-gray-500 font-bold uppercase tracking-widest">Tu Resumen</h1>
                         <p className="text-lg font-bold">Hola, Saúl</p>
@@ -183,8 +191,19 @@ export default function DashboardPage() {
                 </div>
             </header>
 
-            {/* Nuevo Componente de Estadísticas */}
-            {!isLoading && <StatsSummary transactions={transactions} />}
+            <div className="space-y-8 mb-12">
+                {/* Banner de Alertas de Presupuesto */}
+                <BudgetAlertBanner />
+
+                {/* 1. Card de Patrimonio Neto (Activos - Pasivos) */}
+                <NetWorthCard />
+
+                {/* 2. Resumen de Estadísticas (Ingresos/Gastos del Mes) */}
+                {!isLoading && <StatsSummary transactions={transactions} />}
+
+                {/* 3. Widget de Presupuesto Global */}
+                <BudgetWidget />
+            </div>
 
             <AnimatePresence>
                 {pendingCount > 0 && (
@@ -221,38 +240,44 @@ export default function DashboardPage() {
                     <div className="flex justify-center py-20"><Loader2 className="animate-spin text-blue-500" /></div>
                 ) : (
                     <div className="space-y-10">
-                        {Object.keys(groupedTransactions).map((date) => (
-                            <div key={date} className="space-y-4">
-                                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">{formatDateHeader(date)}</h3>
-                                <div className="space-y-3">
-                                    {groupedTransactions[date].map((t: any) => {
-                                        const Icon = (Icons as any)[t.category?.icon] || Icons.HelpCircle;
-                                        return (
-                                            <div key={t.id} className="group relative flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-3xl shadow-sm">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white" style={{ backgroundColor: t.category?.color || '#3b82f6' }}>
-                                                        <Icon className="w-6 h-6" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-sm tracking-tight">{t.description || t.category?.name}</p>
-                                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t.payment_method}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center gap-4">
-                                                    <p className={`font-bold ${t.type === 'expense' ? 'text-white' : 'text-green-400'}`}>
-                                                        {t.type === 'expense' ? '-' : '+'} ${Number(t.amount).toLocaleString()}
-                                                    </p>
-                                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button onClick={() => { setEditingTransaction(t); setShowModal(true); }} className="p-2 bg-blue-500/10 text-blue-400 rounded-xl"><Edit2 className="w-3 h-3" /></button>
-                                                        <button onClick={async () => { if (confirm("¿Borrar?")) { await deleteTransaction(t.id); loadData(); } }} className="p-2 bg-red-500/10 text-red-500 rounded-xl"><Trash2 className="w-3 h-3" /></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                        {Object.keys(groupedTransactions).length === 0 ? (
+                            <div className="text-center py-20 bg-white/5 rounded-[40px] border border-dashed border-white/10 flex flex-col items-center gap-4">
+                                <p className="text-gray-500 font-medium text-sm">No hay movimientos registrados.</p>
                             </div>
-                        ))}
+                        ) : (
+                            Object.keys(groupedTransactions).map((date) => (
+                                <div key={date} className="space-y-4">
+                                    <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">{formatDateHeader(date)}</h3>
+                                    <div className="space-y-3">
+                                        {groupedTransactions[date].map((t: any) => {
+                                            const Icon = (Icons as any)[t.category?.icon] || Icons.HelpCircle;
+                                            return (
+                                                <div key={t.id} className="group relative flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-3xl shadow-sm">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white" style={{ backgroundColor: t.category?.color || '#3b82f6' }}>
+                                                            <Icon className="w-6 h-6" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-sm tracking-tight">{t.description || t.category?.name}</p>
+                                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t.payment_method}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <p className={`font-bold ${t.type === 'expense' ? 'text-white' : 'text-green-400'}`}>
+                                                            {t.type === 'expense' ? '-' : '+'} ${Number(t.amount).toLocaleString()}
+                                                        </p>
+                                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onClick={() => { setEditingTransaction(t); setShowModal(true); }} className="p-2 bg-blue-500/10 text-blue-400 rounded-xl"><Edit2 className="w-3 h-3" /></button>
+                                                            <button onClick={async () => { if (confirm("¿Borrar?")) { await deleteTransaction(t.id); loadData(); } }} className="p-2 bg-red-500/10 text-red-500 rounded-xl"><Trash2 className="w-3 h-3" /></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 )}
             </section>
@@ -287,5 +312,6 @@ export default function DashboardPage() {
                 {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
             </AnimatePresence>
         </div>
+
     );
 }

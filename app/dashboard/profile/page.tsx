@@ -5,6 +5,7 @@ import { supabase } from "@/supabase/client";
 import ProfileForm from "@/components/features/profile/ProfileForm";
 import AvatarUpload from "@/components/features/profile/AvatarUpload";
 import SecuritySettings from "@/components/features/profile/SecuritySettings";
+import EmailSettings from "@/components/features/profile/EmailSettings";
 import Link from "next/link";
 import { ChevronLeft, LogOut, Loader2 } from "lucide-react";
 import { updateAvatarUrl } from "@/lib/actions/profile";
@@ -71,6 +72,13 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="grid gap-12">
+                    <section>
+                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 ml-1">
+                            Sincronización
+                        </h3>
+                        <EmailSettings />
+                    </section>
+
                     <section>
                         <h3 className="text-gray-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 ml-1">
                             Información Personal

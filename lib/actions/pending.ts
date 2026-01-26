@@ -34,9 +34,58 @@ export async function approvePendingTransaction(id: string, data: any) {
     return { success: true };
 }
 
+export async function approveSelectedTransactions(ids: string[]) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("No autenticado");
+
+    // 1. Obtener los datos de los seleccionados
+    const { data: pendings } = await supabase
+        .from("pending_transactions")
+        .select("*")
+        .in("id", ids);
+
+    if (!pendings) return { count: 0 };
+
+    // 2. Crear las transacciones reales
+    for (const p of pendings) {
+        await createTransaction({
+            amount: p.amount,
+            description: p.description,
+            category_id: p.category_id,
+            date: p.date || new Date().toISOString().split('T')[0],
+            type: p.type || 'expense',
+            payment_method: "Email Sync"
+        });
+    }
+
+    // 3. Marcar como aprobadas
+    await supabase
+        .from("pending_transactions")
+        .update({ status: "approved" })
+        .in("id", ids);
+
+    return { count: pendings.length };
+}
+
+export async function approveAllPendingTransactions() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("No autenticado");
+
+    const { data: pendings } = await supabase
+        .from("pending_transactions")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+
+    if (!pendings) return { count: 0 };
+
+    return await approveSelectedTransactions(pendings.map(p => p.id));
+}
+
 export async function rejectPendingTransaction(id: string) {
     const supabase = await createClient();
-
     const { error } = await supabase
         .from("pending_transactions")
         .update({ status: "rejected" })
