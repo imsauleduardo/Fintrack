@@ -1,5 +1,4 @@
 "use client";
-
 import { ShoppingCart, Car, Home, Heart, Coffee, Utensils } from "lucide-react";
 
 const baseCategories = [
@@ -19,23 +18,31 @@ export default function StepCategories({ selected, onChange }: any) {
 
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-2">Categorías Favoritas</h2>
-            <p className="text-gray-400 mb-8">Selecciona las categorías que más suelas utilizar.</p>
+            <h2 className="text-2xl font-bold mb-2 text-foreground">Categorías Favoritas</h2>
+            <p className="text-muted-foreground mb-6">Selecciona las categorías que más suelas utilizar.</p>
 
             <div className="grid grid-cols-2 gap-3">
-                {baseCategories.map((cat) => (
-                    <button
-                        key={cat.id}
-                        onClick={() => toggle(cat.id)}
-                        className={`p-6 rounded-2xl border flex flex-col items-center gap-3 transition-all ${selected.includes(cat.id) ? 'bg-purple-600/10 border-purple-500' : 'bg-white/5 border-white/10'
-                            }`}
-                    >
-                        <div className={`p-4 rounded-xl ${selected.includes(cat.id) ? 'bg-purple-500 text-white' : 'bg-white/5 text-gray-400'}`}>
-                            {cat.icon}
-                        </div>
-                        <span className="font-medium">{cat.name}</span>
-                    </button>
-                ))}
+                {baseCategories.map((cat) => {
+                    const isActive = selected.includes(cat.id);
+                    return (
+                        <button
+                            key={cat.id}
+                            onClick={() => toggle(cat.id)}
+                            className={`p-4 rounded-2xl border flex flex-col items-center gap-3 transition-all duration-200 ${isActive
+                                    ? 'bg-primary/5 border-primary shadow-sm'
+                                    : 'bg-card border-border hover:bg-muted/50'
+                                }`}
+                        >
+                            <div className={`p-3 rounded-xl transition-colors ${isActive ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
+                                }`}>
+                                {cat.icon}
+                            </div>
+                            <span className={`font-medium text-sm ${isActive ? 'text-primary' : 'text-foreground'}`}>
+                                {cat.name}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );

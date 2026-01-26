@@ -31,6 +31,12 @@ export async function middleware(request: NextRequest) {
     const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard')
     const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
     const isSetupPage = request.nextUrl.pathname.startsWith('/auth/setup')
+    const isRootPage = request.nextUrl.pathname === '/'
+
+    // REGLA 0: Si entra a la raíz, redirigir al login
+    if (isRootPage) {
+        return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
 
     // REGLA 1: Si intenta entrar al Dashboard y NO está logueado -> Al Login
     if (isDashboardPage && !user) {
