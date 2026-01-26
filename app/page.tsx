@@ -1,29 +1,20 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import SplashScreen from '@/components/features/auth/SplashScreen';
-import WelcomeScreen from '@/components/features/auth/WelcomeScreen';
+import type { Metadata } from 'next';
+import LandingClient from '@/components/features/auth/LandingClient';
+
+export const metadata: Metadata = {
+  title: "Fintrack | Tu Libertad Financiera",
+  description: "Toma el control de tus finanzas personales con inteligencia artificial. Gestiona presupuestos, metas y gastos en una sola app.",
+  openGraph: {
+    title: "Fintrack - Finanzas Inteligentes",
+    description: "La herramienta definitiva para el seguimiento de gastos y metas financieras.",
+    type: "website",
+  },
+};
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000); // 3 segundos de carga premium
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <main>
-      <AnimatePresence mode="wait">
-        {showSplash ? (
-          <SplashScreen key="splash" />
-        ) : (
-          <WelcomeScreen key="welcome" />
-        )}
-      </AnimatePresence>
+    <main className="min-h-screen bg-background">
+      <LandingClient />
     </main>
   );
 }
