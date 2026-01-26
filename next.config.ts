@@ -1,6 +1,6 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
-import withPWAInit from "next-pwa";
+const withPWAInit = require("next-pwa");
 
 const withPWA = withPWAInit({
   dest: "public",
@@ -13,7 +13,27 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  /* opciones adicionales aquí */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Para fotos de perfil de Google OAuth
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co', // Para imágenes placeholder si se usan
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
+  },
+  // Optimizaciones de producción
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  // PWA & Optimizaciones experimentales
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion', 'date-fns'],
+  },
   eslint: {
     // Esto permitirá que Vercel termine el deploy aunque ESLint tenga errores circulares
     ignoreDuringBuilds: true,

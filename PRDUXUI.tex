@@ -1,0 +1,511 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Product Requirements Document (PRD) UX/UI}\\
+\large Fintrack - Aplicación de Control de Finanzas Personales}
+\author{Saul Eduardo Fernandez}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Guía de UX/UI y Diseño Visual}
+
+Esta sección define los principios de diseño, sistema visual y directrices de experiencia de usuario para Fintrack, con un enfoque minimalista que prioriza claridad, funcionalidad y accesibilidad.
+
+\subsection{Principios de Diseño}
+
+\subsubsection{Minimalismo Funcional}
+
+\begin{itemize}
+  \item \textbf{Simplicidad sobre complejidad}: Cada elemento en pantalla debe tener un propósito claro. Eliminar decoraciones innecesarias.
+  \item \textbf{Jerarquía visual clara}: Usar tamaño, peso y espaciado para guiar la atención, no múltiples colores.
+  \item \textbf{Espacio en blanco generoso}: Mínimo 16px entre elementos relacionados, 32px entre secciones.
+  \item \textbf{Contenido primero}: El diseño sirve al contenido, no al revés. Los datos financieros son la estrella.
+  \item \textbf{Progressive disclosure}: Mostrar información en capas, de lo general a lo específico.
+\end{itemize}
+
+\subsubsection{Claridad y Legibilidad}
+
+\begin{itemize}
+  \item \textbf{Tipografía limpia}: Fuentes sans-serif de alta legibilidad en todos los tamaños.
+  \item \textbf{Contraste adecuado}: Mínimo WCAG AA (4.5:1 para texto normal, 3:1 para texto grande).
+  \item \textbf{Información escaneable}: Usuarios deben poder entender estado financiero en 3 segundos.
+  \item \textbf{Números destacados}: Los montos financieros deben ser lo más legible en cada pantalla.
+\end{itemize}
+
+\subsubsection{Confianza y Seguridad}
+
+\begin{itemize}
+  \item \textbf{Estética profesional}: El diseño debe transmitir seriedad y confiabilidad.
+  \item \textbf{Feedback constante}: Cada acción del usuario recibe respuesta visual inmediata.
+  \item \textbf{Confirmaciones en acciones críticas}: Delete, aprobación de gastos grandes, etc.
+  \item \textbf{Transparencia}: Mostrar claramente fuente de datos (manual, OCR, email, IA).
+\end{itemize}
+
+\subsection{Sistema de Diseño}
+
+\subsubsection{Paleta de Colores}
+
+\textbf{Esquema Minimalista Monocromático + Acentos Funcionales}
+
+\begin{itemize}
+  \item \textbf{Modo Claro (Default)}
+    \begin{itemize}
+      \item Background principal: \texttt{\#FFFFFF} (blanco puro)
+      \item Background secundario: \texttt{\#F8F9FA} (gris ultra claro)
+      \item Texto primario: \texttt{\#1A1A1A} (negro suave, no puro)
+      \item Texto secundario: \texttt{\#6B7280} (gris medio)
+      \item Texto terciario: \texttt{\#9CA3AF} (gris claro)
+      \item Bordes/divisores: \texttt{\#E5E7EB} (gris muy claro)
+    \end{itemize}
+  
+  \item \textbf{Modo Oscuro}
+    \begin{itemize}
+      \item Background principal: \texttt{\#0A0A0A} (negro profundo)
+      \item Background secundario: \texttt{\#1A1A1A} (gris muy oscuro)
+      \item Texto primario: \texttt{\#F8F9FA} (blanco suave)
+      \item Texto secundario: \texttt{\#9CA3AF} (gris medio)
+      \item Texto terciario: \texttt{\#6B7280} (gris oscuro)
+      \item Bordes/divisores: \texttt{\#2D2D2D} (gris oscuro sutil)
+    \end{itemize}
+  
+  \item \textbf{Colores Funcionales (Mínimos y estratégicos)}
+    \begin{itemize}
+      \item \textbf{Primary/Brand}: \texttt{\#3B82F6} (azul confiable, corporativo)
+        \begin{itemize}
+          \item Uso: CTAs principales, links, elementos interactivos
+          \item Hover: \texttt{\#2563EB}
+          \item Disabled: \texttt{\#93C5FD}
+        \end{itemize}
+      
+      \item \textbf{Success/Ingresos}: \texttt{\#10B981} (verde éxito)
+        \begin{itemize}
+          \item Uso: Ingresos, confirmaciones, metas alcanzadas
+          \item Background suave: \texttt{\#D1FAE5}
+        \end{itemize}
+      
+      \item \textbf{Danger/Egresos}: \texttt{\#EF4444} (rojo advertencia)
+        \begin{itemize}
+          \item Uso: Egresos, alertas, eliminaciones
+          \item Background suave: \texttt{\#FEE2E2}
+        \end{itemize}
+      
+      \item \textbf{Warning}: \texttt{\#F59E0B} (amarillo alerta)
+        \begin{itemize}
+          \item Uso: Advertencias, presupuestos al 80\%
+          \item Background suave: \texttt{\#FEF3C7}
+        \end{itemize}
+      
+      \item \textbf{Info}: \texttt{\#6366F1} (índigo informativo)
+        \begin{itemize}
+          \item Uso: Tips, información contextual, insights IA
+          \item Background suave: \texttt{\#E0E7FF}
+        \end{itemize}
+    \end{itemize}
+  
+  \item \textbf{Regla de uso de color}:
+    \begin{itemize}
+      \item 90\% de la interfaz en escala de grises (negro, blanco, grises)
+      \item 10\% colores funcionales, solo cuando añaden significado
+      \item Máximo 2 colores por pantalla (excluyendo grises)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tipografía}
+
+\begin{itemize}
+  \item \textbf{Fuente principal}: \texttt{Inter} (Google Fonts - gratis, excelente legibilidad)
+    \begin{itemize}
+      \item Alternativa: \texttt{SF Pro} (iOS), \texttt{Roboto} (Android) - nativas del sistema
+    \end{itemize}
+  
+  \item \textbf{Escala tipográfica} (escala modular 1.25):
+    \begin{itemize}
+      \item Display (Headers grandes): 32px / 2rem, weight 700, line-height 1.2
+      \item H1: 24px / 1.5rem, weight 600, line-height 1.3
+      \item H2: 20px / 1.25rem, weight 600, line-height 1.4
+      \item H3: 18px / 1.125rem, weight 600, line-height 1.4
+      \item Body Large (montos destacados): 18px / 1.125rem, weight 500, line-height 1.5
+      \item Body (texto principal): 16px / 1rem, weight 400, line-height 1.6
+      \item Body Small: 14px / 0.875rem, weight 400, line-height 1.5
+      \item Caption: 12px / 0.75rem, weight 400, line-height 1.4
+    \end{itemize}
+  
+  \item \textbf{Números y montos}: 
+    \begin{itemize}
+      \item Usar \texttt{font-variant-numeric: tabular-nums} para alineación
+      \item Weight 600 para montos destacados
+      \item Siempre mostrar 2 decimales para consistencia: \$1,234.56
+    \end{itemize}
+  
+  \item \textbf{Reglas de uso}:
+    \begin{itemize}
+      \item Máximo 3 pesos (weights) por pantalla: regular (400), medium (500), semibold (600)
+      \item Line-height generoso para lectura cómoda
+      \item Letter-spacing normal (no ajustes salvo títulos grandes: -0.02em)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Espaciado y Grid}
+
+\begin{itemize}
+  \item \textbf{Sistema de espaciado base 4px} (múltiplos de 4):
+    \begin{itemize}
+      \item 4px: Espaciado mínimo entre elementos relacionados
+      \item 8px: Padding interno de componentes pequeños
+      \item 12px: Espaciado entre elementos en grupos
+      \item 16px: Padding estándar, margen entre secciones relacionadas
+      \item 24px: Separación entre grupos de contenido
+      \item 32px: Separación entre secciones principales
+      \item 48px: Espaciado entre bloques importantes
+      \item 64px: Márgenes grandes, separadores visuales
+    \end{itemize}
+  
+  \item \textbf{Grid responsive}:
+    \begin{itemize}
+      \item Mobile: 16px padding lateral, 1 columna
+      \item Tablet: 24px padding lateral, 2 columnas con 24px gap
+      \item Desktop: Container max-width 1280px, 3 columnas con 32px gap
+    \end{itemize}
+  
+  \item \textbf{Altura de elementos táctiles}:
+    \begin{itemize}
+      \item Mínimo 44px (iOS guideline) / 48px (Material Design)
+      \item Botones principales: 48px altura
+      \item Botones secundarios: 40px altura
+      \item Input fields: 48px altura para fácil interacción
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Componentes UI}
+
+\begin{itemize}
+  \item \textbf{Botones}
+    \begin{itemize}
+      \item \textit{Primary}: Background color brand, texto blanco, border-radius 8px, padding 12px 24px
+      \item \textit{Secondary}: Background transparent, borde color brand, texto color brand
+      \item \textit{Ghost}: Sin background ni borde, solo texto color brand
+      \item \textit{Destructive}: Background color danger para acciones peligrosas
+      \item Estados: Default, Hover (opacidad 90\%), Active, Disabled (opacidad 40\%), Loading (spinner)
+      \item Sombra sutil en hover: \texttt{box-shadow: 0 2px 8px rgba(0,0,0,0.08)}
+    \end{itemize}
+  
+  \item \textbf{Cards}
+    \begin{itemize}
+      \item Background: blanco (modo claro) / gris oscuro (modo oscuro)
+      \item Border: \texttt{1px solid} color borde
+      \item Border-radius: 12px (suave, moderno)
+      \item Padding interno: 16px (mobile) / 20px (desktop)
+      \item Sombra mínima: \texttt{box-shadow: 0 1px 3px rgba(0,0,0,0.04)}
+      \item Hover elevation (opcional): \texttt{box-shadow: 0 4px 12px rgba(0,0,0,0.08)}
+    \end{itemize}
+  
+  \item \textbf{Input Fields}
+    \begin{itemize}
+      \item Height: 48px
+      \item Border: \texttt{1px solid} color borde
+      \item Border-radius: 8px
+      \item Padding: 12px 16px
+      \item Focus state: borde color brand, outline offset 2px
+      \item Error state: borde color danger, mensaje de error debajo en color danger
+      \item Label: 14px, weight 500, margin-bottom 8px
+      \item Placeholder: texto terciario
+    \end{itemize}
+  
+  \item \textbf{Icons}
+    \begin{itemize}
+      \item Librería: Lucide Icons o Heroicons (consistencia de estilo)
+      \item Tamaños: 16px (small), 20px (medium), 24px (large), 32px (xlarge)
+      \item Stroke-width: 2px (consistente con estilo minimalista)
+      \item Color: hereda del texto padre, o color funcional cuando necesario
+    \end{itemize}
+  
+  \item \textbf{Progress Bars}
+    \begin{itemize}
+      \item Altura: 8px (slim) o 12px (destacado)
+      \item Background: gris claro
+      \item Fill: gradiente sutil del color funcional o color sólido
+      \item Border-radius: 999px (píldora completa)
+      \item Animación suave en cambio de progreso (transition 0.3s ease)
+    \end{itemize}
+  
+  \item \textbf{Badges/Tags}
+    \begin{itemize}
+      \item Pequeños, discretos: padding 4px 8px
+      \item Border-radius: 4px
+      \item Font-size: 12px, weight 500
+      \item Background: color funcional suave (ej: \texttt{\#D1FAE5} para ingresos)
+      \item Texto: color funcional oscuro para contraste
+    \end{itemize}
+  
+  \item \textbf{Modals/Dialogs}
+    \begin{itemize}
+      \item Overlay: \texttt{rgba(0,0,0,0.5)} con backdrop-blur 4px
+      \item Container: background blanco, border-radius 16px, max-width 480px
+      \item Padding: 24px
+      \item Sombra profunda: \texttt{box-shadow: 0 20px 60px rgba(0,0,0,0.3)}
+      \item Animación entrada: fade + scale desde 0.95 a 1
+    \end{itemize}
+  
+  \item \textbf{Bottom Sheets (Mobile)}
+    \begin{itemize}
+      \item Aparecen desde abajo con animación slide-up
+      \item Handle visual arriba: barra gris de 32px x 4px
+      \item Border-radius superior: 16px
+      \item Swipe-down para cerrar
+    \end{itemize}
+\end{itemize}
+
+\subsection{Patrones de Interacción}
+
+\subsubsection{Navegación}
+
+\begin{itemize}
+  \item \textbf{Mobile}: Bottom navigation con 5 tabs, iconos + labels
+  \item \textbf{Tablet/Desktop}: Sidebar colapsable en left side
+  \item \textbf{Gestos}:
+    \begin{itemize}
+      \item Swipe horizontal entre tabs (móvil)
+      \item Swipe en items de lista: revelar acciones (editar, eliminar)
+      \item Pull-to-refresh en listas
+      \item Long-press para menú contextual
+    \end{itemize}
+  \item \textbf{Transiciones}:
+    \begin{itemize}
+      \item Navegación entre pantallas: slide horizontal (150ms ease-out)
+      \item Modals: fade + scale (200ms ease-out)
+      \item Collapses/expands: height transition (250ms ease-in-out)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Feedback Visual}
+
+\begin{itemize}
+  \item \textbf{Loading states}:
+    \begin{itemize}
+      \item Skeleton loaders para contenido (no spinners genéricos)
+      \item Progress bar linear en top de pantalla para operaciones largas
+      \item Spinner solo en botones durante submit
+    \end{itemize}
+  
+  \item \textbf{Confirmación de acciones}:
+    \begin{itemize}
+      \item Toast notifications: 3 segundos, bottom-center (mobile), top-right (desktop)
+      \item Success: checkmark verde + mensaje breve
+      \item Error: icono X rojo + mensaje explicativo
+      \item Info: icono i azul + contexto adicional
+    \end{itemize}
+  
+  \item \textbf{Estados vacíos (Empty states)}:
+    \begin{itemize}
+      \item Ilustración simple y minimalista
+      \item Texto explicativo: "Aún no tienes transacciones"
+      \item CTA claro: "Agregar mi primera transacción"
+      \item Centrado vertical y horizontalmente
+    \end{itemize}
+  
+  \item \textbf{Micro-interacciones}:
+    \begin{itemize}
+      \item Botones: scale 0.98 en active state
+      \item Checkboxes: checkmark animado con path drawing
+      \item Toggle switches: smooth slide transition (200ms)
+      \item Number counters: animación conteo en cambio de valores grandes
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Manejo de Datos Financieros}
+
+\begin{itemize}
+  \item \textbf{Visualización de montos}:
+    \begin{itemize}
+      \item Siempre incluir símbolo de moneda antes del monto
+      \item Separadores de miles: coma (1,234.56)
+      \item Ingresos en color verde, egresos en color rojo (solo el monto, no todo el card)
+      \item Montos negativos con signo menos, no entre paréntesis
+      \item Tamaño de fuente proporcional a importancia (monto total > monto individual)
+    \end{itemize}
+  
+  \item \textbf{Gráficos y visualizaciones}:
+    \begin{itemize}
+      \item Estilo minimalista: ejes mínimos, sin grid excesivo
+      \item Colores: usar paleta funcional, máximo 5 colores en un gráfico
+      \item Labels claros y legibles
+      \item Tooltips con información detallada on hover/tap
+      \item Responsive: adaptar complejidad según tamaño de pantalla
+    \end{itemize}
+  
+  \item \textbf{Input de montos}:
+    \begin{itemize}
+      \item Teclado numérico con decimales
+      \item Preview del monto formateado en tiempo real
+      \item Botones rápidos: +10, +50, +100, etc. (configurables)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Accesibilidad}
+
+\begin{itemize}
+  \item \textbf{Contraste de color}: WCAG AA mínimo, AAA preferido
+  \item \textbf{Tamaño de texto}: Mínimo 16px para body, escalable hasta 200\%
+  \item \textbf{Touch targets}: Mínimo 44x44px (iOS) / 48x48px (Android)
+  \item \textbf{Screen readers}: 
+    \begin{itemize}
+      \item Todos los iconos interactivos con aria-label
+      \item Headings semánticos (h1, h2, h3)
+      \item Labels descriptivos en inputs
+      \item ARIA roles apropiados (navigation, main, complementary)
+    \end{itemize}
+  \item \textbf{Navegación por teclado}: 
+    \begin{itemize}
+      \item Focus visible en todos los elementos interactivos
+      \item Tab order lógico
+      \item Shortcuts para acciones comunes
+    \end{itemize}
+  \item \textbf{Motion}: 
+    \begin{itemize}
+      \item Respetar \texttt{prefers-reduced-motion} del sistema
+      \item Animaciones desactivables en settings
+    \end{itemize}
+\end{itemize}
+
+\subsection{Responsive Design}
+
+\begin{itemize}
+  \item \textbf{Mobile First}: Diseñar primero para móvil, expandir a desktop
+  \item \textbf{Breakpoints}:
+    \begin{itemize}
+      \item Mobile: < 640px (1 columna, bottom nav)
+      \item Tablet: 640px - 1024px (2 columnas, sidebar opcional)
+      \item Desktop: > 1024px (3 columnas, sidebar persistente)
+    \end{itemize}
+  \item \textbf{Adaptaciones por tamaño}:
+    \begin{itemize}
+      \item Mobile: FAB para acciones, menús bottom sheet
+      \item Tablet: Más espacio horizontal, 2 paneles simultáneos
+      \item Desktop: Dashboard complejo con múltiples widgets
+    \end{itemize}
+\end{itemize}
+
+\subsection{Animaciones y Transiciones}
+
+\begin{itemize}
+  \item \textbf{Principios}:
+    \begin{itemize}
+      \item Rápidas y sutiles: 150-300ms máximo
+      \item Propósito funcional, no decorativo
+      \item Easing natural: ease-out para entrada, ease-in para salida
+    \end{itemize}
+  
+  \item \textbf{Catálogo de animaciones}:
+    \begin{itemize}
+      \item \textit{Fade}: opacity 0 to 1, 200ms ease-out
+      \item \textit{Slide}: transform translateY, 250ms ease-out
+      \item \textit{Scale}: transform scale 0.95 to 1, 200ms ease-out
+      \item \textit{Skeleton pulse}: shimmer effect con gradiente animado
+    \end{itemize}
+  
+  \item \textbf{Cuándo usar}:
+    \begin{itemize}
+      \item Entrada/salida de elementos (modals, toasts)
+      \item Cambio de estado (loading, success, error)
+      \item Feedback de interacción (tap, hover)
+      \item NO usar para navegación entre pantallas principales (demasiado frecuente)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Ejemplo de Pantalla: Dashboard Principal}
+
+\textbf{Aplicación de principios minimalistas}:
+
+\begin{enumerate}
+  \item \textbf{Header limpio}:
+    \begin{itemize}
+      \item Fondo blanco puro, sin sombra
+      \item Saludo: "Hola, [Nombre]" en H1 (24px, weight 600)
+      \item Avatar pequeño (32px) a la derecha
+      \item Sin decoraciones adicionales
+    \end{itemize}
+  
+  \item \textbf{Card de resumen mensual} (hero card):
+    \begin{itemize}
+      \item Background: gradiente sutil gris claro a blanco
+      \item Border-radius: 12px
+      \item Padding generoso: 24px
+      \item 3 números destacados alineados horizontalmente:
+        \begin{itemize}
+          \item Ingresos (verde, 18px, weight 600)
+          \item Egresos (rojo, 18px, weight 600)
+          \item Balance (azul, 24px, weight 700) - más grande
+        \end{itemize}
+      \item Labels en gris secundario (14px, weight 400) sobre cada número
+      \item Divisores verticales sutiles entre números
+    \end{itemize}
+  
+  \item \textbf{Gráfico de flujo de caja}:
+    \begin{itemize}
+      \item Line chart simple, sin grid de fondo
+      \item Eje X: últimos 6 meses (labels en 12px, gris terciario)
+      \item Eje Y: escala de montos (sin labels, solo valores en tooltips)
+      \item Línea: 2px stroke, color brand
+      \item Área bajo curva: gradiente sutil del color brand con opacidad 10\%
+      \item Sin leyenda (solo una línea, obvio qué representa)
+    \end{itemize}
+  
+  \item \textbf{Lista de transacciones recientes}:
+    \begin{itemize}
+      \item Título: "Recientes" (H3, 18px)
+      \item 5 items, cada uno:
+        \begin{itemize}
+          \item Icono categoría (24px, color funcional)
+          \item Descripción (16px, weight 400)
+          \item Fecha (12px, gris terciario)
+          \item Monto (16px, weight 600, color según tipo)
+        \end{itemize}
+      \item Separadores: línea gris ultra claro (1px) entre items
+      \item Link al final: "Ver todas" (color brand, 14px)
+    \end{itemize}
+  
+  \item \textbf{FAB}:
+    \begin{itemize}
+      \item Botón circular flotante, 56px diámetro
+      \item Background color brand, icono + blanco
+      \item Sombra: \texttt{box-shadow: 0 4px 16px rgba(59,130,246,0.3)}
+      \item Posición: bottom-right, 16px margen
+    \end{itemize}
+  
+  \item \textbf{Espaciado total}:
+    \begin{itemize}
+      \item 16px padding lateral en toda la pantalla
+      \item 24px entre card de resumen y gráfico
+      \item 24px entre gráfico y lista de transacciones
+      \item 32px padding bottom para espacio del FAB
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Checklist de Diseño Minimalista}
+
+Antes de implementar cada pantalla, validar:
+
+\begin{enumerate}
+  \item ¿Cada elemento tiene un propósito funcional claro?
+  \item ¿Se puede eliminar algún elemento sin afectar funcionalidad?
+  \item ¿El espacio en blanco guía la atención del usuario?
+  \item ¿La jerarquía visual es obvia sin usar múltiples colores?
+  \item ¿Los colores se usan solo para comunicar significado, no decoración?
+  \item ¿Las fuentes son legibles en todos los tamaños de pantalla?
+  \item ¿Los elementos interactivos son obvios sin necesidad de hover states?
+  \item ¿Las animaciones mejoran la experiencia o solo agregan ruido?
+  \item ¿La interfaz se siente rápida y responsive?
+  \item ¿Cumple con estándares de accesibilidad (WCAG AA mínimo)?
+\end{enumerate}
+
+\end{document}

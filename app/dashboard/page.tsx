@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogOut, Loader2, Trash2, Edit2, Calendar, Mail, RefreshCcw, Bell } from "lucide-react";
+import { LogOut, Loader2, Trash2, Edit2, Calendar, Mail, RefreshCcw, Bell, Target, ChevronRight } from "lucide-react";
 import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from "@/lib/actions/transactions";
 import { parseTransactionText } from "@/lib/actions/ai";
 import { getGoogleAuthUrl } from "@/lib/actions/gmail";
@@ -25,6 +25,9 @@ import { es } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import BudgetAlertBanner from "@/components/features/budgets/BudgetAlertBanner";
+import CategoryPieChart from "@/components/features/dashboard/CategoryPieChart";
+import MonthlyEvolutionChart from "@/components/features/dashboard/MonthlyEvolutionChart";
+import InsightsCard from "@/components/features/dashboard/InsightsCard";
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState<any[]>([]);
@@ -203,6 +206,31 @@ export default function DashboardPage() {
 
                 {/* 3. Widget de Presupuesto Global */}
                 <BudgetWidget />
+                {/* 4. Gráficos de Analytics */}
+                {!isLoading && transactions.length > 0 && (
+                    <>
+                        <MonthlyEvolutionChart transactions={transactions} />
+                        <CategoryPieChart transactions={transactions} />
+                    </>
+                )}
+                {/* 5. Botón de Metas Financieras */}
+                <button
+                    onClick={() => router.push('/dashboard/goals')}
+                    className="w-full p-4 bg-gradient-to-br from-purple-600/10 to-pink-600/10 border border-purple-500/20 rounded-[24px] flex items-center justify-between active:scale-95 transition-all"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="p-3 bg-purple-600/20 rounded-2xl">
+                            <Target className="w-5 h-5 text-purple-500" />
+                        </div>
+                        <div className="text-left">
+                            <p className="text-sm font-black text-white">Metas Financieras</p>
+                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Objetivos de Ahorro</p>
+                        </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                </button>
+                {/* 6. Insights de IA */}
+                <InsightsCard />
             </div>
 
             <AnimatePresence>
