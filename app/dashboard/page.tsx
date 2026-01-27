@@ -6,16 +6,18 @@ import StatsSummary from "@/components/features/dashboard/StatsSummary";
 import BudgetWidget from "@/components/features/budgets/BudgetWidget";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
 import { getTransactions } from "@/lib/actions/transactions";
+import { getPendingTransactions } from "@/lib/actions/pending";
 import { useRouter } from "next/navigation";
 import { format, isToday, isYesterday } from "date-fns";
 import { es } from "date-fns/locale";
 import * as Icons from "lucide-react";
-import { ListX } from "lucide-react";
-import { motion } from "framer-motion";
+import { ListX, Sparkles, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Skeleton from "@/components/ui/Skeleton";
 
 export default function DashboardPage() {
     const [transactions, setTransactions] = useState<any[]>([]);
+    const [pendingCount, setPendingCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
@@ -28,8 +30,12 @@ export default function DashboardPage() {
     const loadData = async () => {
         setIsLoading(true);
         try {
-            const txData = await getTransactions();
+            const [txData, pData] = await Promise.all([
+                getTransactions(),
+                getPendingTransactions()
+            ]);
             setTransactions(txData || []);
+            setPendingCount(pData?.length || 0);
         } catch (e) {
             console.error(e);
         } finally {
@@ -55,10 +61,37 @@ export default function DashboardPage() {
         <div className="w-full max-w-full overflow-x-hidden bg-background text-foreground pb-24">
             <DashboardHeader user={{ name: "Saúl", avatarLetter: "S" }} />
 
-            <div className="space-y-8 mb-8 max-w-full overflow-hidden">
+            <div className="space-y-8 mb-8 max-w-full overflow-hidden px-4">
+                {/* Alerta de Pendientes */}
+                <AnimatePresence>
+                    {pendingCount > 0 && (
+                        <motion.button
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            onClick={() => router.push('/dashboard/transactions/pending')}
+                            className="w-full p-4 bg-primary rounded-[28px] flex items-center justify-between gap-3 shadow-lg shadow-primary/20 relative overflow-hidden group"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                                    <Sparkles className="w-5 h-5" />
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-xs font-black text-white uppercase tracking-widest">Revisión pendiente</p>
+                                    <p className="text-white/80 text-[10px] font-bold">Tienes {pendingCount} movimientos detectados en tu email</p>
+                                </div>
+                            </div>
+                            <div className="p-2 bg-white/20 rounded-xl text-white">
+                                <ChevronRight className="w-4 h-4" />
+                            </div>
+                        </motion.button>
+                    )}
+                </AnimatePresence>
+
                 {/* Resumen */}
                 {isLoading ? (
-                    <div className="px-4"><Skeleton height="180px" /></div>
+                    <Skeleton height="180px" />
                 ) : (
                     <StatsSummary transactions={transactions} />
                 )}
