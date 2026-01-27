@@ -37,7 +37,9 @@ const CurrencyAmount = ({
         xl: 'text-lg',      // 18px (destacados menores)
         '2xl': 'text-xl',   // 20px
         '3xl': 'text-2xl',  // 24px (balance)
-        '4xl': 'text-3xl'   // 30px (hero)
+        '4xl': 'text-3xl',  // 30px (hero)
+        '5xl': 'text-5xl',
+        '6xl': 'text-6xl'
     };
 
     // Formateo de número con separador de miles

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, RefreshCcw, Loader2, Check, X } from "lucide-react";
+import { Camera, Image as ImageIcon, Loader2, Check, X, Sparkles } from "lucide-react";
 import { parseReceiptImage } from "@/lib/actions/ai";
+import { motion } from "framer-motion"; // <-- IMPORTACIÓN CORREGIDA
 
 interface ReceiptScannerProps {
     onResult: (data: any) => void;
@@ -13,6 +14,7 @@ interface ReceiptScannerProps {
 export default function ReceiptScanner({ onResult, isProcessing, setIsProcessing }: ReceiptScannerProps) {
     const [preview, setPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const cameraInputRef = useRef<HTMLInputElement>(null);
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -38,34 +40,91 @@ export default function ReceiptScanner({ onResult, isProcessing, setIsProcessing
     };
 
     return (
-        <div className="w-full">
-            <input type="file" ref={fileInputRef} onChange={handleFile} accept="image/*" capture="environment" className="hidden" />
+        <div className="w-full space-y-6 py-4">
+            {/* Inputs Ocultos: La magia está en el atributo 'capture' */}
+            <input
+                type="file"
+                ref={cameraInputRef}
+                onChange={handleFile}
+                accept="image/*"
+                capture="environment" // Esto activa la cámara trasera en móviles
+                className="hidden"
+            />
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFile}
+                accept="image/*"
+                className="hidden"
+            />
 
             {!preview ? (
-                <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full flex items-center justify-center gap-3 py-6 bg-blue-600/10 border border-dashed border-blue-500/30 rounded-3xl text-blue-400 hover:bg-blue-600/20 transition-all font-bold"
-                >
-                    <Camera className="w-6 h-6" />
-                    <span className="text-xs uppercase tracking-widest">Escanear Recibo</span>
-                </button>
+                <div className="grid grid-cols-2 gap-4">
+                    <button
+                        onClick={() => cameraInputRef.current?.click()}
+                        className="flex flex-col items-center justify-center gap-4 p-8 bg-primary/5 border-2 border-dashed border-primary/20 rounded-[32px] text-primary hover:bg-primary/10 transition-all group"
+                    >
+                        <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20 group-active:scale-90 transition-transform">
+                            <Camera className="w-7 h-7" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">Tomar Foto</span>
+                    </button>
+
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex flex-col items-center justify-center gap-4 p-8 bg-muted/50 border-2 border-dashed border-border rounded-[32px] text-muted-foreground hover:bg-muted transition-all group"
+                    >
+                        <div className="w-14 h-14 bg-white border border-border rounded-2xl flex items-center justify-center text-gray-400 shadow-sm group-active:scale-90 transition-transform">
+                            <ImageIcon className="w-7 h-7" />
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest">Subir Ticket</span>
+                    </button>
+                </div>
             ) : (
-                <div className="relative rounded-3xl overflow-hidden border border-white/10 aspect-[4/3] bg-black group">
-                    <img src={preview} alt="Ticket" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => setPreview(null)} disabled={isProcessing} className="p-4 bg-white/10 rounded-2xl hover:bg-red-500/20 text-white"><X className="w-6 h-6" /></button>
-                        <button onClick={handleProcess} disabled={isProcessing} className="p-4 bg-blue-600 rounded-2xl text-white shadow-xl shadow-blue-600/40">
-                            {isProcessing ? <Loader2 className="w-6 h-6 animate-spin" /> : <Check className="w-6 h-6" />}
+                <div className="relative rounded-[40px] overflow-hidden border-4 border-white shadow-2xl aspect-[3/4] bg-black group mx-auto max-w-sm">
+                    <img src={preview} alt="Vista previa" className="w-full h-full object-cover opacity-80" />
+
+                    <div className="absolute inset-x-0 bottom-8 flex justify-center gap-6 px-8">
+                        <button
+                            onClick={() => setPreview(null)}
+                            disabled={isProcessing}
+                            className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 hover:bg-red-500/40 transition-all"
+                        >
+                            <X className="w-8 h-8" />
+                        </button>
+
+                        <button
+                            onClick={handleProcess}
+                            disabled={isProcessing}
+                            className="flex-1 h-16 bg-primary rounded-[24px] flex items-center justify-center gap-3 text-white font-bold shadow-xl shadow-primary/40 active:scale-95 transition-all"
+                        >
+                            {isProcessing ? (
+                                <Loader2 className="w-6 h-6 animate-spin" />
+                            ) : (
+                                <>
+                                    <Sparkles className="w-5 h-5 text-blue-200" />
+                                    <span>Analizar Recibo</span>
+                                </>
+                            )}
                         </button>
                     </div>
+
                     {isProcessing && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 gap-4">
-                            <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
-                            <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Escaneando...</p>
+                        <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center space-y-4">
+                            <motion.div
+                                animate={{ y: [-20, 20, -20] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="w-full h-1 bg-primary shadow-[0_0_20px_rgba(29,78,216,0.8)] z-20"
+                            />
+                            <p className="text-sm font-black text-white uppercase tracking-[0.2em] drop-shadow-lg">Escaneando con IA...</p>
                         </div>
                     )}
                 </div>
             )}
+
+            <p className="text-[10px] text-center text-muted-foreground font-medium px-10">
+                La IA identificará comercio, monto y categoría automáticamente.
+            </p>
         </div>
     );
 }

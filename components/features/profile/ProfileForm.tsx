@@ -36,14 +36,14 @@ export default function ProfileForm({ initialData }: { initialData: any }) {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white/5 p-6 rounded-3xl border border-white/10">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <Input label="Nombre Completo" error={errors.fullName?.message} {...register("fullName")} />
 
             <div className="w-full">
-                <label className="block text-sm font-medium text-gray-400 mb-2 ml-1">Moneda Principal</label>
+                <label className="block text-sm font-medium text-foreground mb-2 ml-1">Moneda Principal</label>
                 <select
                     {...register("currency")}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full bg-input border border-border rounded-2xl py-4 px-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
                 >
                     <option value="USD">Dólar (USD)</option>
                     <option value="EUR">Euro (EUR)</option>
@@ -52,7 +52,7 @@ export default function ProfileForm({ initialData }: { initialData: any }) {
                 </select>
             </div>
 
-            <button disabled={isLoading} className="w-full bg-blue-600 py-4 rounded-2xl font-bold flex justify-center gap-2 items-center">
+            <button disabled={isLoading} className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-2xl font-bold flex justify-center gap-2 items-center transition-all disabled:opacity-50">
                 {isLoading ? <Loader2 className="animate-spin w-5 h-5" /> : <><Save className="w-5 h-5" /> Guardar Cambios</>}
             </button>
         </form>

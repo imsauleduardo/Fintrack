@@ -5,17 +5,15 @@ import { createAsset } from "@/lib/actions/assets";
 import { Loader2, Plus, Wallet, Building2, Car, Landmark, Coins } from "lucide-react";
 
 const ASSET_TYPES = [
-    { id: 'cash', label: 'Efectivo', icon: Coins },
-    { id: 'bank', label: 'Cuenta Bancaria', icon: Landmark },
+    { id: 'bank_account', label: 'Cuenta', icon: Landmark },
     { id: 'investment', label: 'Inversión', icon: Wallet },
-    { id: 'real_estate', label: 'Propiedad', icon: Building2 },
-    { id: 'vehicle', label: 'Vehículo', icon: Car },
+    { id: 'property', label: 'Propiedad', icon: Building2 },
     { id: 'other', label: 'Otro', icon: Plus },
 ];
 
 export default function AssetForm({ onSuccess }: { onSuccess: () => void }) {
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({ name: '', type: 'bank', balance: '' });
+    const [formData, setFormData] = useState({ name: '', type: 'bank_account', balance: '' });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,48 +30,55 @@ export default function AssetForm({ onSuccess }: { onSuccess: () => void }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-3 gap-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-3 gap-2">
                 {ASSET_TYPES.map((type) => (
                     <button
                         key={type.id}
                         type="button"
                         onClick={() => setFormData({ ...formData, type: type.id })}
-                        className={`p-4 rounded-3xl border transition-all flex flex-col items-center gap-2 ${formData.type === type.id
-                            ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/20'
-                            : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                        className={`p-3 rounded-2xl border transition-all flex flex-col items-center gap-1.5 ${formData.type === type.id
+                            ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[0.98]'
+                            : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
                             }`}
                     >
-                        <type.icon className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter">{type.label}</span>
+                        <type.icon className="w-4 h-4" />
+                        <span className="text-[9px] font-bold uppercase tracking-tight">{type.label}</span>
                     </button>
                 ))}
             </div>
 
-            <div className="space-y-4">
-                <input
-                    type="text"
-                    placeholder="Nombre (ej: Santander, Binance, etc.)"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-gray-600 outline-none focus:border-blue-500 transition-all font-bold"
-                />
-                <input
-                    type="number"
-                    placeholder="Saldo Actual"
-                    required
-                    value={formData.balance}
-                    onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white placeholder:text-gray-600 outline-none focus:border-blue-300 transition-all text-2xl font-black tabular-nums"
-                />
+            <div className="space-y-3">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Nombre del Activo</label>
+                    <input
+                        type="text"
+                        placeholder="ej: Santander, Binance, etc."
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-sm font-bold text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-all"
+                    />
+                </div>
+
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Saldo Actual ($)</label>
+                    <input
+                        type="number"
+                        placeholder="0.00"
+                        required
+                        value={formData.balance}
+                        onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-2xl font-black tabular-nums text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-all"
+                    />
+                </div>
             </div>
 
             <button
                 disabled={loading}
-                className="w-full py-5 bg-blue-600 rounded-[32px] font-black text-white hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-primary rounded-[20px] font-black text-white hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/10 disabled:opacity-50 mt-2"
             >
-                {loading ? <Loader2 className="animate-spin" /> : "Guardar Activo"}
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Guardar Activo"}
             </button>
         </form>
     );

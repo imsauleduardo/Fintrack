@@ -33,12 +33,16 @@ export async function createAsset(data: {
     if (!user) throw new Error("No autenticado");
 
     const { error } = await supabase.from("assets").insert({
-        ...data,
+        name: data.name,
+        type: data.type,
+        current_value: data.balance,
+        description: data.description,
         user_id: user.id,
     });
 
     if (error) throw new Error(error.message);
     revalidatePath("/dashboard/assets");
+    revalidatePath("/dashboard/patrimonio");
     return { success: true };
 }
 
@@ -52,9 +56,15 @@ export async function updateAsset(id: string, data: {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No autenticado");
 
+    const updateData: any = { ...data };
+    if (data.balance !== undefined) {
+        updateData.current_value = data.balance;
+        delete updateData.balance;
+    }
+
     const { error } = await supabase
         .from("assets")
-        .update(data)
+        .update(updateData)
         .eq("id", id)
         .eq("user_id", user.id);
 
@@ -81,5 +91,5 @@ export async function deleteAsset(id: string) {
 
 export async function getTotalAssets() {
     const assets = await getAssets();
-    return assets.reduce((total, asset) => total + Number(asset.balance || 0), 0);
+    return assets.reduce((total, asset) => total + Number(asset.current_value || 0), 0);
 }

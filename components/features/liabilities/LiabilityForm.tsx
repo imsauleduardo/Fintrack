@@ -33,48 +33,55 @@ export default function LiabilityForm({ onSuccess }: { onSuccess: () => void }) 
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-2 gap-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-2">
                 {LIAB_TYPES.map((type) => (
                     <button
                         key={type.id}
                         type="button"
                         onClick={() => setFormData({ ...formData, type: type.id })}
-                        className={`p-4 rounded-3xl border transition-all flex flex-col items-center gap-2 ${formData.type === type.id
-                                ? 'bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/20'
-                                : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                        className={`p-3 rounded-2xl border transition-all flex flex-col items-center gap-1.5 ${formData.type === type.id
+                            ? 'bg-red-500 border-red-500 text-white shadow-md shadow-red-500/20 scale-[0.98]'
+                            : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
                             }`}
                     >
-                        <type.icon className="w-5 h-5" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">{type.label}</span>
+                        <type.icon className="w-4 h-4" />
+                        <span className="text-[9px] font-bold uppercase tracking-widest">{type.label}</span>
                     </button>
                 ))}
             </div>
 
-            <div className="space-y-4">
-                <input
-                    type="text"
-                    placeholder="Nombre (ej: Visa BBVA, Préstamo Personal)"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-red-500 font-bold"
-                />
-                <input
-                    type="number"
-                    placeholder="Saldo Pendiente"
-                    required
-                    value={formData.balance}
-                    onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-2xl font-black tabular-nums outline-none focus:border-red-500"
-                />
+            <div className="space-y-3">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Nombre del Pasivo</label>
+                    <input
+                        type="text"
+                        placeholder="ej: Visa BBVA, Préstamo Personal"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-sm font-bold text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-red-500 transition-all"
+                    />
+                </div>
+
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Saldo Pendiente ($)</label>
+                    <input
+                        type="number"
+                        placeholder="0.00"
+                        required
+                        value={formData.balance}
+                        onChange={(e) => setFormData({ ...formData, balance: e.target.value })}
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-2xl font-black tabular-nums text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-red-500 transition-all"
+                    />
+                </div>
             </div>
 
             <button
                 disabled={loading}
-                className="w-full py-5 bg-white text-black rounded-[32px] font-black hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-primary rounded-[20px] font-black text-white hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/10 disabled:opacity-50 mt-2"
             >
-                {loading ? <Loader2 className="animate-spin text-black" /> : "Guardar Pasivo"}
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Guardar Pasivo"}
             </button>
         </form>
     );

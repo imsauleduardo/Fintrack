@@ -2,6 +2,7 @@
 
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
+import CurrencyAmount from "@/components/ui/CurrencyAmount";
 
 interface StatsSummaryProps {
     transactions: any[];
@@ -18,53 +19,78 @@ export default function StatsSummary({ transactions }: StatsSummaryProps) {
     const balance = totals.income - totals.expense;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {/* Card Balance */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-6 bg-gradient-to-br from-blue-600 to-blue-800 rounded-[32px] shadow-lg shadow-blue-600/20 text-white flex flex-col justify-between h-40"
-            >
-                <div className="flex justify-between items-start">
-                    <div className="p-2 bg-white/20 rounded-xl"><Wallet className="w-5 h-5" /></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Balance Total</span>
-                </div>
-                <p className="text-3xl font-bold tracking-tight">${balance.toLocaleString()}</p>
-            </motion.div>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="px-4"
+        >
+            <div className="relative overflow-hidden p-8 bg-gradient-to-br from-primary via-blue-700 to-indigo-900 rounded-[42px] text-white shadow-2xl shadow-primary/30">
+                {/* Elementos Decorativos de Diseño (Efectos de luz) */}
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-3xl opacity-60" />
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/20 rounded-full blur-2xl opacity-40" />
 
-            {/* Card Ingresos */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="p-6 bg-white/5 border border-white/10 rounded-[32px] flex flex-col justify-between h-40"
-            >
-                <div className="flex justify-between items-start">
-                    <div className="p-2 bg-green-500/10 rounded-xl text-green-400"><TrendingUp className="w-5 h-5" /></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Ingresos</span>
-                </div>
-                <div>
-                    <p className="text-2xl font-bold tracking-tight text-green-400">+${totals.income.toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Este mes</p>
-                </div>
-            </motion.div>
+                <div className="relative z-10 space-y-8">
+                    {/* Fila Superior: Icono y Saldo Principal */}
+                    <div className="flex justify-between items-center">
+                        <div className="p-3.5 bg-white/15 backdrop-blur-xl rounded-2xl border border-white/20 shadow-inner">
+                            <Wallet className="w-6 h-6" strokeWidth={1.5} />
+                        </div>
+                        <div className="text-right">
+                            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/50 mb-1">Saldo Disponible</p>
+                            <div className="flex items-baseline justify-end gap-1">
+                                <span className="text-3xl font-black text-white">$</span>
+                                <CurrencyAmount
+                                    amount={balance}
+                                    colored={false}
+                                    currency=""
+                                    size="3xl"
+                                    className="font-black tracking-tighter text-white"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-            {/* Card Gastos */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="p-6 bg-white/5 border border-white/10 rounded-[32px] flex flex-col justify-between h-40"
-            >
-                <div className="flex justify-between items-start">
-                    <div className="p-2 bg-red-500/10 rounded-xl text-red-500"><TrendingDown className="w-5 h-5" /></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Gastos</span>
+                    {/* Separador Sutil con Brillo */}
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                    {/* Fila Inferior: Métricas de Flujo Mensual */}
+                    <div className="grid grid-cols-2 gap-8">
+                        {/* Ingresos */}
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-green-500/20 rounded-lg">
+                                    <TrendingUp className="w-3.5 h-3.5 text-green-400" />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Ingresos</span>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <CurrencyAmount
+                                    amount={totals.income}
+                                    colored={false}
+                                    className="text-2xl font-extrabold text-white"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Gastos */}
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2 justify-end">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Gastos</span>
+                                <div className="p-1.5 bg-red-500/20 rounded-lg">
+                                    <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+                                </div>
+                            </div>
+                            <div className="flex items-baseline justify-end gap-1">
+                                <CurrencyAmount
+                                    amount={-totals.expense}
+                                    colored={false}
+                                    className="text-2xl font-extrabold text-white"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p className="text-2xl font-bold tracking-tight text-white">-${totals.expense.toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Este mes</p>
-                </div>
-            </motion.div>
-        </div>
+            </div>
+        </motion.div>
     );
-}
+}   

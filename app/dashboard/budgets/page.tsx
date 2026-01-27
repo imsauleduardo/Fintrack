@@ -8,6 +8,7 @@ import Modal from "@/components/ui/Modal";
 import BudgetForm from "@/components/features/budgets/BudgetForm";
 import BudgetCard from "@/components/features/budgets/BudgetCard";
 import Toast from "@/components/ui/Toast";
+import EmptyState from "@/components/ui/EmptyState";
 import { AnimatePresence } from "framer-motion";
 
 type Period = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -25,7 +26,6 @@ export default function BudgetsPage() {
     const loadData = async () => {
         setIsLoading(true);
         const data = await getBudgetsWithProgress();
-        // Filtrar por período seleccionado
         const filtered = data.filter(b => (b.period || 'monthly') === selectedPeriod);
         setBudgets(filtered);
         setIsLoading(false);
@@ -46,35 +46,31 @@ export default function BudgetsPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-black text-white p-6 pb-32 max-w-2xl mx-auto">
-            <header className="flex items-center justify-between mb-10">
+        <div className="min-h-screen bg-background text-foreground pb-20 p-6">
+            <header className="flex items-center mb-10 pt-4">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/dashboard')} className="p-3 bg-white/5 rounded-2xl border border-white/10 text-gray-400">
+                    <button onClick={() => router.back()} className="p-3 bg-muted rounded-2xl border border-border">
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Presupuestos</h1>
-                        <p className="text-xs text-blue-500 font-black uppercase tracking-[0.2em]">Control de Gastos</p>
+                        <h1 className="text-2xl font-bold">Presupuestos</h1>
+                        <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em]">Control de Gastos</p>
                     </div>
                 </div>
-                <button onClick={() => setShowModal(true)} className="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-600/20 active:scale-95 transition-all">
-                    <Plus className="w-6 h-6 text-white" />
-                </button>
             </header>
 
-            {/* Tabs de Períodos */}
-            <div className="mb-8 p-1 bg-white/5 rounded-[24px] border border-white/10 grid grid-cols-4 gap-1">
+            <div className="mb-8 p-1 bg-muted rounded-[24px] border border-border grid grid-cols-4 gap-1">
                 {periods.map(period => (
                     <button
                         key={period.value}
                         onClick={() => setSelectedPeriod(period.value)}
-                        className={`py-3 px-2 rounded-[20px] font-bold text-xs transition-all ${selectedPeriod === period.value
-                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                                : 'text-gray-500 hover:text-gray-300'
+                        className={`py-3 px-1 rounded-[20px] font-bold text-[10px] uppercase tracking-tighter transition-all ${selectedPeriod === period.value
+                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                            : 'text-muted-foreground hover:text-foreground'
                             }`}
                     >
                         <div className="flex flex-col items-center gap-1">
-                            <span className="text-lg">{period.emoji}</span>
+                            <span className="text-base">{period.emoji}</span>
                             <span>{period.label}</span>
                         </div>
                     </button>
@@ -82,15 +78,14 @@ export default function BudgetsPage() {
             </div>
 
             {isLoading ? (
-                <div className="flex justify-center py-20"><Loader2 className="animate-spin text-blue-500" /></div>
+                <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>
             ) : budgets.length === 0 ? (
-                <div className="text-center py-20 bg-white/5 rounded-[40px] border border-dashed border-white/10 flex flex-col items-center gap-4">
-                    <div className="p-4 bg-white/5 rounded-full text-gray-600"><Target className="w-12 h-12" /></div>
-                    <div className="space-y-1">
-                        <p className="font-bold text-gray-500">Sin presupuestos {periods.find(p => p.value === selectedPeriod)?.label.toLowerCase()}es</p>
-                        <p className="text-xs text-gray-700">Establece límites para controlar tus finanzas.</p>
-                    </div>
-                </div>
+                <EmptyState
+                    icon={Target}
+                    title={`Sin presupuestos ${periods.find(p => p.value === selectedPeriod)?.label.toLowerCase()}es`}
+                    description="Establece límites para controlar tus finanzas."
+                    className="py-20"
+                />
             ) : (
                 <div className="space-y-4">
                     {budgets.map(b => (

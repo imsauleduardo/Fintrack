@@ -35,7 +35,12 @@ export async function createLiability(data: {
     if (!user) throw new Error("No autenticado");
 
     const { error } = await supabase.from("liabilities").insert({
-        ...data,
+        name: data.name,
+        type: data.type,
+        current_balance: data.balance, // Mapa de balance a current_balance
+        interest_rate: data.interest_rate,
+        due_date: data.due_date || null, // Manejar fecha vacía
+        description: data.description,
         user_id: user.id,
     });
 
@@ -56,9 +61,15 @@ export async function updateLiability(id: string, data: {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No autenticado");
 
+    const updateData: any = { ...data };
+    if (data.balance !== undefined) {
+        updateData.current_balance = data.balance;
+        delete updateData.balance;
+    }
+
     const { error } = await supabase
         .from("liabilities")
-        .update(data)
+        .update(updateData)
         .eq("id", id)
         .eq("user_id", user.id);
 
@@ -85,5 +96,5 @@ export async function deleteLiability(id: string) {
 
 export async function getTotalLiabilities() {
     const liabilities = await getLiabilities();
-    return liabilities.reduce((total, liability) => total + Number(liability.balance || 0), 0);
+    return liabilities.reduce((total, liability) => total + Number(liability.current_balance || 0), 0);
 }

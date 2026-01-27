@@ -44,16 +44,16 @@ export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id:
     return (
         <div
             onClick={handleCardClick}
-            className="p-6 bg-white/5 border border-white/10 rounded-[32px] space-y-6 group relative cursor-pointer hover:bg-white/[0.07] transition-all active:scale-[0.98]"
+            className="p-5 bg-card border border-border rounded-[32px] space-y-4 group relative cursor-pointer hover:bg-muted/50 transition-all active:scale-[0.98]"
         >
-            <div className="flex justify-between items-start">
-                <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white" style={{ backgroundColor: goal.color || '#3b82f6' }}>
-                        <Icon className="w-6 h-6" />
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: goal.color || '#3b82f6' }}>
+                        <Icon className="w-5 h-5" />
                     </div>
                     <div>
                         <h4 className="font-bold text-sm tracking-tight">{goal.name}</h4>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                             {getTypeLabel()}
                         </p>
                     </div>
@@ -68,19 +68,19 @@ export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id:
                 )}
             </div>
 
-            <div className="space-y-4">
-                <div className="flex justify-between items-end">
+            <div className="space-y-3">
+                <div className="flex justify-between items-center">
                     <div className="flex items-baseline gap-1">
-                        <p className="text-3xl font-black italic tabular-nums">${goal.current_amount.toLocaleString()}</p>
-                        <span className="text-xs text-gray-600 font-bold not-italic">de ${goal.target_amount.toLocaleString()}</span>
+                        <p className="text-2xl font-black italic tabular-nums">${goal.current_amount.toLocaleString()}</p>
+                        <span className="text-[10px] text-muted-foreground font-bold not-italic">de ${goal.target_amount.toLocaleString()}</span>
                     </div>
-                    <div className="text-right">
-                        <p className={`text-2xl font-black tabular-nums ${getStatusColor()}`}>{progress.toFixed(0)}%</p>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Progreso</p>
+                    <div className="text-right flex items-center gap-2">
+                        <p className={`text-xl font-black tabular-nums ${getStatusColor()}`}>{progress.toFixed(0)}%</p>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest hidden xs:block">Progreso</p>
                     </div>
                 </div>
 
-                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
                     <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
@@ -89,15 +89,17 @@ export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id:
                     />
                 </div>
 
-                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                    <span>Resta: <span className="text-white">${goal.remaining.toLocaleString()}</span></span>
-                    {!goal.isCompleted && (
-                        <span className={goal.daysRemaining < 30 ? 'text-orange-500' : 'text-gray-500'}>
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <div className="space-x-1">
+                        <span>Resta:</span>
+                        <span className="text-foreground">${goal.remaining.toLocaleString()}</span>
+                    </div>
+                    {goal.isCompleted ? (
+                        <span className="text-green-500">✓ Completada</span>
+                    ) : (
+                        <span className={goal.daysRemaining < 30 ? 'text-orange-500' : ''}>
                             {goal.daysRemaining > 0 ? `${goal.daysRemaining} días` : 'Vencida'}
                         </span>
-                    )}
-                    {goal.isCompleted && (
-                        <span className="text-green-500">✓ Completada</span>
                     )}
                 </div>
             </div>

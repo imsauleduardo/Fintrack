@@ -123,7 +123,7 @@ export default function EmailSettings() {
                 <button
                     onClick={handleConnect}
                     disabled={actionLoading}
-                    className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                     <RefreshCw className="w-4 h-4" /> Conectar Gmail
                 </button>

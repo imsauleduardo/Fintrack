@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* ============================================
-   FINTRACK - UX/UI SYSTEM (Fase 10)
-   Basado en PRD Minimalista
+   FINTRACK - UX/UI SYSTEM (Fase 11)
+   Color Principal Intensificado
    ============================================ */
 
 @theme inline {
-  /* Paleta de Colores Funcionales */
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
+  /* Paleta de Colores Funcionales - Azul más intenso */
+  --color-primary: #1D4ED8;
+  --color-primary-hover: #1E40AF;
   --color-success: #10B981;
   --color-success-bg: #D1FAE5;
   --color-danger: #EF4444;
@@ -32,11 +32,8 @@
 
   /* Radios y Sombras */
   --radius-sm: 0.25rem;
-  /* 4px */
   --radius-md: 0.5rem;
-  /* 8px - Inputs/Buttons */
   --radius-lg: 0.75rem;
-  /* 12px - Cards */
   --radius-full: 9999px;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
@@ -48,10 +45,8 @@
    VARIABLES CSS (Theming)
    ============================================ */
 :root {
-  /* Tipografía */
   --font-inter: 'Inter', sans-serif;
 
-  /* Modo Claro (Default) */
   --background: #FFFFFF;
   --foreground: #1A1A1A;
 
@@ -62,7 +57,6 @@
   --border: #E5E7EB;
   --input-bg: #FFFFFF;
 
-  /* Utilidades */
   --overlay: rgba(0, 0, 0, 0.5);
 }
 
@@ -83,10 +77,6 @@
   }
 }
 
-/* ============================================
-   COMPONENTES BASE (Refactorizados)
-   ============================================ */
-
 /* Reset básico */
 * {
   border-color: var(--border);
@@ -105,14 +95,10 @@ body {
   gap: 0.5rem;
   white-space: nowrap;
   border-radius: var(--radius-md);
-  /* 8px */
   font-weight: 500;
   font-size: 0.875rem;
-  /* 14px */
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-
-  /* Micro-interacción: Click Scale */
 }
 
 .btn:active:not(:disabled) {
@@ -125,19 +111,17 @@ body {
   pointer-events: none;
 }
 
-/* Variantes de Botón */
 .btn-primary {
   background-color: var(--color-primary);
   color: white;
   height: 48px;
-  /* Touch target optimizado */
   padding: 0 1.5rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.2);
 }
 
 .btn-primary:hover {
   background-color: var(--color-primary-hover);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.23);
 }
 
 .btn-secondary {
@@ -161,7 +145,6 @@ body {
 
 .btn-ghost:hover {
   background-color: var(--color-info-bg);
-  /* Azul muy suave */
 }
 
 .btn-danger {
@@ -179,14 +162,12 @@ body {
 .input {
   display: flex;
   height: 48px;
-  /* Altura cómoda */
   width: 100%;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background-color: var(--input-bg);
   padding: 0 1rem;
   font-size: 1rem;
-  /* 16px para evitar zoom en iOS */
   color: var(--foreground);
   transition: border-color 0.2s;
 }
@@ -206,15 +187,9 @@ body {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  /* 12px */
   padding: 1.5rem;
-  /* 24px */
   box-shadow: var(--shadow-sm);
 }
-
-/* ============================================
-   UTILIDADES & ANIMACIONES
-   ============================================ */
 
 /* Montos Financieros */
 .amount-positive {
@@ -235,7 +210,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Scrollbar minimalista */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -266,10 +241,46 @@ body {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg,
-      var(--muted) 25%,
-      var(--border) 50%,
-      var(--muted) 75%);
+  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
+}
+
+/* Ocultar Navbar cuando hay un modal abierto */
+body.has-modal-open .bottom-nav {
+  display: none !important;
+}
+
+/* Utilidad para ocultar la barra de scroll en el carrusel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* UTILIDADES DE CARRUSEL (Paso a paso) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Forzar Snap Scrolling horizontal */
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel-item {
+  scroll-snap-align: center;
+  flex-shrink: 0;
 }

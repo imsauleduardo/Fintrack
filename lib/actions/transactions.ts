@@ -73,10 +73,16 @@ export async function getTransactions() {
 
     const { data, error } = await supabase
         .from("transactions")
-        .select("*, categories(name, icon, color)")
+        .select("*, category:categories(name, icon, color)")
         .eq("user_id", user.id)
         .order("date", { ascending: false });
 
-    if (error) throw error;
+    console.log("UserID:", user.id);
+    console.log("Transactions found:", data?.length);
+    console.log("First transaction:", data?.[0]);
+    if (error) {
+        console.error("Error fetching transactions:", error);
+        throw error;
+    }
     return data;
 }

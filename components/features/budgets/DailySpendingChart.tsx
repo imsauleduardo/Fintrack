@@ -30,17 +30,17 @@ export default function DailySpendingChart({ transactions, budgetAmount }: { tra
     }, [transactions, budgetAmount]);
 
     return (
-        <div className="p-6 bg-white/5 border border-white/10 rounded-[32px]">
-            <div className="mb-4">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Gasto Diario vs Promedio</h3>
-                <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded bg-blue-600"></div>
-                        <span className="text-gray-500">Gasto Real</span>
+        <div className="p-4 bg-card rounded-[24px]">
+            <div className="mb-3">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Gasto Diario vs Promedio</h3>
+                <div className="flex gap-4 text-[9px] font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded bg-primary"></div>
+                        <span className="text-muted-foreground/80">Gasto Real</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded bg-gray-700"></div>
-                        <span className="text-gray-500">Promedio Permitido</span>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded bg-muted"></div>
+                        <span className="text-muted-foreground/80">Promedio</span>
                     </div>
                 </div>
             </div>

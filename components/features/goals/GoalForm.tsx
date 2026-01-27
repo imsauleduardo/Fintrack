@@ -42,25 +42,25 @@ export default function GoalForm({ onSuccess }: { onSuccess: () => void }) {
     };
 
     const goalTypes: { value: GoalType; label: string; icon: string; description: string }[] = [
-        { value: 'savings', label: 'Ahorro', icon: '💰', description: 'Para emergencias o compras' },
-        { value: 'investment', label: 'Inversión', icon: '📈', description: 'Crecimiento a largo plazo' },
-        { value: 'debt', label: 'Deuda', icon: '💳', description: 'Pagar préstamos o tarjetas' }
+        { value: 'savings', label: 'Ahorro', icon: '💰', description: 'Para emergencias' },
+        { value: 'investment', label: 'Inversión', icon: '📈', description: 'Crecimiento' },
+        { value: 'debt', label: 'Deuda', icon: '💳', description: 'Pagar deudas' }
     ];
 
     const icons = ['Target', 'Home', 'Car', 'Plane', 'GraduationCap', 'Heart', 'Gift', 'Briefcase'];
     const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-blue-500/5 border border-blue-500/10 rounded-2xl p-4 flex gap-3 text-xs text-blue-400 leading-relaxed">
-                <Info className="w-4 h-4 shrink-0 mt-0.5" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="bg-primary/5 border border-primary/10 rounded-2xl p-3 flex gap-3 text-[11px] text-primary leading-tight">
+                <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                 <p className="font-medium">Define una meta financiera y realiza aportes periódicos para alcanzarla.</p>
             </div>
 
             <div className="space-y-4">
                 {/* Tipo de Meta */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">
                         Tipo de Meta
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -69,21 +69,21 @@ export default function GoalForm({ onSuccess }: { onSuccess: () => void }) {
                                 key={type.value}
                                 type="button"
                                 onClick={() => setFormData({ ...formData, type: type.value })}
-                                className={`p-3 rounded-2xl border transition-all text-center ${formData.type === type.value
-                                    ? 'bg-blue-600 border-blue-600 text-white'
-                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                                className={`p-3 rounded-2xl border transition-all text-center flex flex-col items-center gap-1 ${formData.type === type.value
+                                    ? 'bg-primary border-primary text-white shadow-md shadow-primary/20 scale-[0.98]'
+                                    : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
                                     }`}
                             >
-                                <div className="text-2xl mb-1">{type.icon}</div>
-                                <p className="font-bold text-xs">{type.label}</p>
+                                <div className="text-xl">{type.icon}</div>
+                                <p className="font-bold text-[9px] uppercase tracking-tighter">{type.label}</p>
                             </button>
                         ))}
                     </div>
                 </div>
 
                 {/* Nombre */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">
                         Nombre de la Meta
                     </label>
                     <input
@@ -92,107 +92,106 @@ export default function GoalForm({ onSuccess }: { onSuccess: () => void }) {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white placeholder:text-gray-700 outline-none focus:border-blue-500 transition-all"
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-sm font-bold text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-all"
                     />
                 </div>
 
-                {/* Monto Objetivo */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
-                        Monto Objetivo ($)
-                    </label>
-                    <input
-                        type="number"
-                        placeholder="0.00"
-                        required
-                        min="1"
-                        step="0.01"
-                        value={formData.target_amount}
-                        onChange={(e) => setFormData({ ...formData, target_amount: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-3xl font-black tabular-nums text-white placeholder:text-gray-700 outline-none focus:border-blue-500 transition-all"
-                    />
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Monto Objetivo */}
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">
+                            Monto ($)
+                        </label>
+                        <input
+                            type="number"
+                            placeholder="0.00"
+                            required
+                            min="1"
+                            step="0.01"
+                            value={formData.target_amount}
+                            onChange={(e) => setFormData({ ...formData, target_amount: e.target.value })}
+                            className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-xl font-black tabular-nums text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-all"
+                        />
+                    </div>
+
+                    {/* Fecha Objetivo */}
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <Calendar className="w-3 h-3" />
+                            Fecha
+                        </label>
+                        <input
+                            type="date"
+                            required
+                            value={formData.target_date}
+                            onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
+                            className="w-full bg-muted/50 border border-border rounded-xl p-3.5 text-sm font-bold text-foreground outline-none focus:border-primary transition-all"
+                        />
+                    </div>
                 </div>
 
-                {/* Fecha Objetivo */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1 flex items-center gap-2">
-                        <Calendar className="w-3 h-3" />
-                        Fecha Objetivo
-                    </label>
-                    <input
-                        type="date"
-                        required
-                        value={formData.target_date}
-                        onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white outline-none focus:border-blue-500 transition-all"
-                    />
+                {/* Icono y Color */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Icono</label>
+                        <div className="grid grid-cols-4 gap-1.5">
+                            {icons.slice(0, 8).map(icon => {
+                                const IconComponent = (Icons as any)[icon];
+                                return (
+                                    <button
+                                        key={icon}
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, icon })}
+                                        className={`p-2 rounded-lg border transition-all flex items-center justify-center ${formData.icon === icon
+                                            ? 'bg-primary border-primary text-white'
+                                            : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
+                                            }`}
+                                    >
+                                        <IconComponent className="w-4 h-4" />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Color</label>
+                        <div className="grid grid-cols-4 gap-2">
+                            {colors.map(color => (
+                                <button
+                                    key={color}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, color })}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all ${formData.color === color
+                                        ? 'border-foreground scale-110'
+                                        : 'border-transparent'
+                                        }`}
+                                    style={{ backgroundColor: color }}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 {/* Descripción */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
+                <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">
                         Descripción (Opcional)
                     </label>
                     <textarea
                         placeholder="¿Para qué es esta meta?"
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        rows={3}
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-white placeholder:text-gray-700 outline-none focus:border-blue-500 transition-all resize-none"
+                        rows={1}
+                        className="w-full bg-muted/50 border border-border rounded-xl p-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-all resize-none"
                     />
-                </div>
-
-                {/* Icono */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
-                        Icono
-                    </label>
-                    <div className="grid grid-cols-8 gap-2">
-                        {icons.map(icon => {
-                            const IconComponent = (Icons as any)[icon];
-                            return (
-                                <button
-                                    key={icon}
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, icon })}
-                                    className={`p-3 rounded-xl transition-all ${formData.icon === icon
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                                        }`}
-                                >
-                                    <IconComponent className="w-5 h-5" />
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Color */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">
-                        Color
-                    </label>
-                    <div className="grid grid-cols-8 gap-2">
-                        {colors.map(color => (
-                            <button
-                                key={color}
-                                type="button"
-                                onClick={() => setFormData({ ...formData, color })}
-                                className={`w-10 h-10 rounded-xl transition-all ${formData.color === color
-                                    ? 'ring-2 ring-white ring-offset-2 ring-offset-black'
-                                    : ''
-                                    }`}
-                                style={{ backgroundColor: color }}
-                            />
-                        ))}
-                    </div>
                 </div>
             </div>
 
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-5 bg-blue-600 rounded-[32px] font-black text-white hover:bg-blue-500 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-primary rounded-[20px] font-black text-white hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/10 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
                 {loading ? (
                     <Loader2 className="animate-spin w-5 h-5" />
@@ -205,4 +204,4 @@ export default function GoalForm({ onSuccess }: { onSuccess: () => void }) {
             </button>
         </form>
     );
-};
+}
