@@ -25,7 +25,7 @@ const BottomNav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const items: BottomNavItem[] = [
-        { href: "/dashboard", icon: Home, label: "Inicio" },
+        { href: "/dashboard", icon: Home, label: "Resumen" },
         { href: "/dashboard/patrimonio", icon: Wallet, label: "Patrimonio" },
         { isFAB: true },
         { href: "/dashboard/goals", icon: Target, label: "Metas" },
@@ -83,12 +83,10 @@ const BottomNav = () => {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex flex-col items-center gap-1 transition-all ${isActive ? 'text-primary' : 'text-muted-foreground'
-                                    }`}
+                                className={`flex flex-col items-center gap-1 transition-all active:scale-90 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
                             >
-                                <Icon className={`w-6 h-6 ${isActive ? 'fill-current' : ''}`} />
-                                <span className={`text-[10px] font-bold transition-all ${isActive ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
-                                    }`}>
+                                <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
+                                <span className="text-[10px] font-bold">
                                     {item.label}
                                 </span>
                             </Link>

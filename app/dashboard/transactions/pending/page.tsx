@@ -206,7 +206,7 @@ export default function PendingTransactionsPage() {
                         initial={{ y: 100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 100, opacity: 0 }}
-                        className="fixed bottom-6 left-6 right-6 z-50 max-w-md mx-auto"
+                        className="fixed bottom-24 left-6 right-6 z-[100] max-w-md mx-auto"
                     >
                         <div className="bg-foreground text-background p-4 rounded-[24px] shadow-2xl flex items-center justify-between gap-4 border border-white/10">
                             <div className="pl-2">

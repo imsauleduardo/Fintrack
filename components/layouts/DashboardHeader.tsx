@@ -32,14 +32,8 @@ export default function DashboardHeader({ user, title, label }: DashboardHeaderP
 
     return (
         <header className="flex justify-between items-center mb-10 pt-4 px-2">
-            <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-blue-500/20">
-                    {user.avatarLetter}
-                </div>
-                <div>
-                    <h1 className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-0">{label || "Mis Movimientos"}</h1>
-                    <p className="text-xl font-bold text-foreground">{title || `Hola, ${user.name}`}</p>
-                </div>
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+                <h1 className="text-2xl font-black text-foreground truncate">{title || label || "Resumen"}</h1>
             </div>
             <div className="flex items-center gap-2">
                 <button

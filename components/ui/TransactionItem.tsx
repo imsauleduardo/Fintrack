@@ -2,6 +2,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { es } from "date-fns/locale";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface TransactionItemProps {
     transaction: any;
@@ -48,14 +49,17 @@ export default function TransactionItem({
                 onClick && "cursor-pointer"
             )}
         >
-            {/* Checkbox Overlay for Pending View */}
+            {/* Checkbox for Pending View (Left Centered) */}
             {showSelection && onToggleSelection && (
-                <div className="absolute top-3 right-3 z-10" onClick={(e) => { e.stopPropagation(); onToggleSelection(); }}>
+                <div
+                    className="mr-3 shrink-0"
+                    onClick={(e) => { e.stopPropagation(); onToggleSelection(); }}
+                >
                     <div className={cn(
-                        "w-5 h-5 rounded-md border flex items-center justify-center transition-colors",
+                        "w-5 h-5 rounded-md border flex items-center justify-center transition-colors cursor-pointer",
                         isSelected ? "bg-primary border-primary text-white" : "border-muted-foreground/30 bg-background/50"
                     )}>
-                        {isSelected && <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                        {isSelected && <Check className="w-3.5 h-3.5" />}
                     </div>
                 </div>
             )}
