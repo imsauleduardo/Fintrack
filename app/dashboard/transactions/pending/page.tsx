@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, Check, X, Edit2, Mail, Loader2, Sparkles, Filter, Trash2 } from "lucide-react";
+import { ChevronLeft, Check, X, Edit2, Mail, Loader2, Sparkles, Filter, Trash2, CheckSquare, Square } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getPendingTransactions, approvePendingTransaction, rejectPendingTransaction, approveAllPendingTransactions } from "@/lib/actions/pending";
+import {
+    getPendingTransactions,
+    approvePendingTransaction,
+    rejectPendingTransaction,
+    approveAllPendingTransactions,
+    approveSelectedTransactions,
+    rejectSelectedTransactions
+} from "@/lib/actions/pending";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
+import TransactionItem from "@/components/ui/TransactionItem";
 import * as Icons from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Modal from "@/components/ui/Modal";
@@ -14,7 +22,10 @@ export default function PendingTransactionsPage() {
     const [pendings, setPendings] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState<string | null>(null);
+    const [isBatchProcessing, setIsBatchProcessing] = useState(false);
     const [editingTx, setEditingTx] = useState<any | null>(null);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
     const router = useRouter();
 
     useEffect(() => {
@@ -26,10 +37,62 @@ export default function PendingTransactionsPage() {
         try {
             const data = await getPendingTransactions();
             setPendings(data);
+            setSelectedIds(new Set()); // Reset selections on reload
         } catch (error) {
             console.error(error);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const toggleSelection = (id: string) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === pendings.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(pendings.map(p => p.id)));
+        }
+    };
+
+    const handleBatchApprove = async () => {
+        if (selectedIds.size === 0) return;
+        if (!confirm(`¿Aprobar ${selectedIds.size} movimientos seleccionados?`)) return;
+
+        setIsBatchProcessing(true);
+        try {
+            await approveSelectedTransactions(Array.from(selectedIds));
+            setPendings(prev => prev.filter(p => !selectedIds.has(p.id)));
+            setSelectedIds(new Set());
+            window.dispatchEvent(new Event('refresh-data'));
+        } catch (error: any) {
+            alert(error.message);
+        } finally {
+            setIsBatchProcessing(false);
+        }
+    };
+
+    const handleBatchReject = async () => {
+        if (selectedIds.size === 0) return;
+        if (!confirm(`¿Descartar ${selectedIds.size} movimientos seleccionados?`)) return;
+
+        setIsBatchProcessing(true);
+        try {
+            await rejectSelectedTransactions(Array.from(selectedIds));
+            setPendings(prev => prev.filter(p => !selectedIds.has(p.id)));
+            setSelectedIds(new Set());
+        } catch (error: any) {
+            alert(error.message);
+        } finally {
+            setIsBatchProcessing(false);
         }
     };
 
@@ -60,38 +123,28 @@ export default function PendingTransactionsPage() {
         }
     };
 
-    const handleApproveAll = async () => {
-        if (!confirm(`¿Aprobar los ${pendings.length} movimientos automáticamente?`)) return;
-        setIsLoading(true);
-        try {
-            await approveAllPendingTransactions();
-            setPendings([]);
-            window.dispatchEvent(new Event('refresh-data'));
-        } catch (error: any) {
-            alert(error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
-        <div className="min-h-screen bg-background text-foreground pb-32">
-            <header className="flex items-center justify-between gap-4 mb-8 pt-4 px-6">
+        <div className="min-h-screen bg-background text-foreground pb-40"> {/* pb aumentado para el footer fijo */}
+            <header className="flex items-center justify-between gap-4 mb-4 pt-4 px-6 sticky top-0 bg-background/80 backdrop-blur-xl z-10 py-4 border-b border-white/5">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.back()} className="p-3 bg-muted rounded-2xl border border-border">
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                     <div>
                         <h1 className="text-2xl font-black tracking-tight">Por Aprobar</h1>
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Detecciones de Email</p>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            {pendings.length} {pendings.length === 1 ? 'pendiente' : 'pendientes'}
+                        </p>
                     </div>
                 </div>
-                {pendings.length > 1 && (
+
+                {pendings.length > 0 && (
                     <button
-                        onClick={handleApproveAll}
-                        className="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all"
+                        onClick={toggleSelectAll}
+                        className="p-3 bg-muted rounded-xl border border-border/50 text-xs font-bold uppercase tracking-widest flex items-center gap-2"
                     >
-                        Aprobar Todo
+                        {selectedIds.size === pendings.length ? <CheckSquare className="w-4 h-4 text-primary" /> : <Square className="w-4 h-4 text-muted-foreground" />}
+                        <span className="hidden sm:inline">Seleccionar Todo</span>
                     </button>
                 )}
             </header>
@@ -122,6 +175,8 @@ export default function PendingTransactionsPage() {
                     <AnimatePresence>
                         {pendings.map((tx) => {
                             const Icon = (Icons as any)[tx.category?.icon] || Icons.HelpCircle;
+                            const isSelected = selectedIds.has(tx.id);
+
                             return (
                                 <motion.div
                                     key={tx.id}
@@ -129,64 +184,55 @@ export default function PendingTransactionsPage() {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
-                                    className="p-5 bg-card border border-border rounded-[32px] space-y-4 shadow-sm"
                                 >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: tx.category?.color || '#3b82f6' }}>
-                                                <Icon className="w-5 h-5" />
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="font-bold text-sm leading-tight truncate pr-4">{tx.description}</p>
-                                                <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{tx.category?.name || 'Sin Categoría'}</p>
-                                            </div>
-                                        </div>
-                                        <CurrencyAmount
-                                            amount={tx.type === 'expense' ? -tx.amount : tx.amount}
-                                            colored={true}
-                                            size="lg"
-                                            className="font-black tabular-nums"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center gap-2 p-3 bg-muted/30 rounded-2xl border border-border/50">
-                                        <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                                        <p className="text-[10px] text-muted-foreground font-medium truncate italic">
-                                            Asunto: {tx.source_email_subject || 'Email automático'}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => setEditingTx(tx)}
-                                            disabled={isProcessing === tx.id}
-                                            className="flex-1 py-3 bg-muted hover:bg-muted/80 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all active:scale-95"
-                                        >
-                                            <Edit2 className="w-3.5 h-3.5" />
-                                            <span>Editar</span>
-                                        </button>
-                                        <button
-                                            onClick={() => handleReject(tx.id)}
-                                            disabled={isProcessing === tx.id}
-                                            className="p-3 bg-red-500/5 hover:bg-red-500/10 text-red-500 rounded-xl transition-all active:scale-95 border border-red-500/10"
-                                        >
-                                            <X className="w-5 h-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleApprove(tx.id, tx)}
-                                            disabled={isProcessing === tx.id}
-                                            className="flex-[2] py-3 bg-primary text-white rounded-xl text-xs font-black flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all"
-                                        >
-                                            {isProcessing === tx.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                                            <span>Aprobar</span>
-                                        </button>
-                                    </div>
+                                    <TransactionItem
+                                        transaction={tx}
+                                        showSelection={true}
+                                        isSelected={isSelected}
+                                        onToggleSelection={() => toggleSelection(tx.id)}
+                                        onClick={() => setEditingTx(tx)}
+                                    />
                                 </motion.div>
                             );
                         })}
                     </AnimatePresence>
                 )}
             </div>
+
+            {/* Barra Flotante de Acciones por Lote */}
+            <AnimatePresence>
+                {selectedIds.size > 0 && (
+                    <motion.div
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 100, opacity: 0 }}
+                        className="fixed bottom-6 left-6 right-6 z-50 max-w-md mx-auto"
+                    >
+                        <div className="bg-foreground text-background p-4 rounded-[24px] shadow-2xl flex items-center justify-between gap-4 border border-white/10">
+                            <div className="pl-2">
+                                <span className="font-bold text-sm block">{selectedIds.size} seleccionados</span>
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={handleBatchReject}
+                                    disabled={isBatchProcessing}
+                                    className="px-4 py-3 bg-red-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={handleBatchApprove}
+                                    disabled={isBatchProcessing}
+                                    className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center gap-2"
+                                >
+                                    {isBatchProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                                    Aprobar ({selectedIds.size})
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Modal de edición */}
             <Modal

@@ -46,7 +46,7 @@ async function getGmailClient(supabase: any, userId: string) {
     return google.gmail({ version: "v1", auth: oauth2Client });
 }
 
-export async function getPotentialEmails(userId?: string) {
+export async function getPotentialEmails(userId?: string, incremental: boolean = false) {
     const supabase = await createClient();
     let targetUserId = userId;
 
@@ -56,34 +56,96 @@ export async function getPotentialEmails(userId?: string) {
         targetUserId = user.id;
     }
 
+    const { data: tokenData, error: fetchError } = await supabase
+        .from("gmail_tokens")
+        .select("*")
+        .eq("user_id", targetUserId)
+        .single();
+
+    if (fetchError || !tokenData) throw new Error("Gmail no conectado");
+
     const gmail = await getGmailClient(supabase, targetUserId);
 
-    // Marcamos el intento de escaneo en la base de datos
+    // 2. Construir query más precisa
+    // Si no es incremental (primer escaneo), asegurar 30 días exactos
+    let afterTimestamp = Math.floor(Date.now() / 1000 - 30 * 24 * 60 * 60);
+
+    if (incremental && tokenData.last_sync_at) {
+        const lastSync = new Date(tokenData.last_sync_at).getTime() / 1000;
+        // Agregamos un pequeño buffer de 1 minuto para evitar duplicados exactos si hubo latencia
+        afterTimestamp = Math.floor(lastSync);
+    }
+
+    // Query refinada:
+    // - Filtra categoría Personal (primary) y Updates. Excluye Promociones y Social explícitamente.
+    // - Keywords positivos fuertes para transacciones.
+    // - Keywords negativos para empleo, newsletters, etc.
+    const positiveTerms = '("$" OR "€" OR "total" OR "pago" OR "compra" OR "transferencia" OR "sent money" OR "has enviado" OR "recibo" OR "boleta" OR "factura" OR "invoice" OR "yape" OR "plin" OR "bcp" OR "interbank" OR "bbva" OR "scotiabank")';
+    const negativeTerms = '(-"unsubscribe" -"darse de baja" -"empleo" -"job" -"linkedin" -"postulación" -"newsletter" -"publicidad" -"promo" -"oferta" -"descuento")';
+
+    // category:primary o category:updates suelen tener las notificaciones transaccionales. category:promotions es lo que queremos evitar.
+    const query = `after:${afterTimestamp} ${positiveTerms} ${negativeTerms} -category:promotions -category:social`;
+
+    // 3. Obtener mensajes con paginación
+    let allMessages: any[] = [];
+    let nextPageToken: string | undefined = undefined;
+    const MAX_PAGES = 5; // Seguridad para no loopear infinito (5 * 50 = 250 emails max por tanda)
+
+    let pageCount = 0;
+    do {
+        const response: any = await gmail.users.messages.list({
+            userId: "me",
+            q: query,
+            maxResults: 50,
+            pageToken: nextPageToken
+        });
+
+        if (response.data.messages) {
+            allMessages = [...allMessages, ...response.data.messages];
+        }
+
+        nextPageToken = response.data.nextPageToken;
+        pageCount++;
+
+    } while (nextPageToken && pageCount < MAX_PAGES);
+
+    // 4. Actualizar fecha de última sincronización
     await supabase
         .from("gmail_tokens")
         .update({ last_sync_at: new Date().toISOString() })
         .eq("user_id", targetUserId);
 
-    const query = 'after:' + Math.floor(Date.now() / 1000 - 30 * 24 * 60 * 60) + ' ("$" OR "€" OR "total" OR "pago" OR "compra" OR "transferencia" OR "sent money" OR "has enviado" OR "recibo" OR "ticket" OR "order" OR "pedido" OR "banco" OR "bank")';
+    if (allMessages.length === 0) return [];
 
-    const response = await gmail.users.messages.list({ userId: "me", q: query, maxResults: 50 });
-    if (!response.data.messages) return [];
+    // Recuperar detalles de los mensajes (en paralelo con límite de concurrencia si fuera necesario, aquí simple)
+    // Limitar a los primeros 50 para detalles si hay demasiados para no saturar, o procesar todos con cuidado.
+    // El usuario pidió "todos", pero processSelectedEmails usa Gemini que cuesta/tarda.
+    // Vamos a retornar los IDs y basic info, el frontend o el siguiente paso decide cuántos procesar.
+    // NOTA: getPotentialEmails retorna basic info.
 
-    const messages = [];
-    for (const msg of response.data.messages) {
-        const fullMsg = await gmail.users.messages.get({ userId: "me", id: msg.id!, format: 'minimal' });
-        const snippet = fullMsg.data.snippet || "";
-        const subject = fullMsg.data.payload?.headers?.find(h => h.name === 'Subject')?.value || "Sin asunto";
-        const date = fullMsg.data.internalDate || "";
+    const detailedMessages: any[] = [];
+    // Procesamos en lotes o limitamos a los 50 más recientes para la vista inicial si son muchos?
+    // Mejor devolvemos hasta 100 para asegurar cobertura de 30 días.
+    const messagesToFetch = allMessages.slice(0, 100);
 
-        messages.push({
-            id: msg.id || "",
-            subject,
-            snippet,
-            date: date ? parseInt(date) : Date.now()
-        });
+    for (const msg of messagesToFetch) {
+        try {
+            const fullMsg = await gmail.users.messages.get({ userId: "me", id: msg.id!, format: 'minimal' });
+            const snippet = fullMsg.data.snippet || "";
+            const subject = fullMsg.data.payload?.headers?.find(h => h.name === 'Subject')?.value || "Sin asunto";
+            const date = fullMsg.data.internalDate || "";
+
+            detailedMessages.push({
+                id: msg.id || "",
+                subject,
+                snippet,
+                date: date ? parseInt(date) : Date.now()
+            });
+        } catch (e) {
+            console.error("Error fetching message details for", msg.id, e);
+        }
     }
-    return messages;
+    return detailedMessages;
 }
 
 export async function processSelectedEmails(messageIds: string[], userId?: string) {

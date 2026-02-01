@@ -5,9 +5,8 @@ import { supabase } from "@/supabase/client";
 import ProfileForm from "@/components/features/profile/ProfileForm";
 import AvatarUpload from "@/components/features/profile/AvatarUpload";
 import SecuritySettings from "@/components/features/profile/SecuritySettings";
-import EmailSettings from "@/components/features/profile/EmailSettings";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, LogOut, Loader2, Shield, Mail, User } from "lucide-react";
+import { ChevronLeft, LogOut, Loader2, Shield, User } from "lucide-react";
 import { updateAvatarUrl } from "@/lib/actions/profile";
 
 export default function ProfilePage() {
@@ -91,19 +90,6 @@ export default function ProfilePage() {
                         </div>
                         <div className="bg-card border border-border rounded-[24px] p-1 shadow-sm">
                             <ProfileForm initialData={profile} />
-                        </div>
-                    </section>
-
-                    {/* Sincronización */}
-                    <section className="space-y-4">
-                        <div className="flex items-center gap-2 px-1">
-                            <Mail className="w-4 h-4 text-primary" />
-                            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                                Sincronización
-                            </h3>
-                        </div>
-                        <div className="bg-card border border-border rounded-[24px] overflow-hidden shadow-sm">
-                            <EmailSettings />
                         </div>
                     </section>
 

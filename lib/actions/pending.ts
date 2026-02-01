@@ -94,3 +94,19 @@ export async function rejectPendingTransaction(id: string) {
     if (error) throw new Error("Error al rechazar");
     return { success: true };
 }
+
+export async function rejectSelectedTransactions(ids: string[]) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("No autenticado");
+
+    const { error } = await supabase
+        .from("pending_transactions")
+        .update({ status: "rejected" })
+        .in("id", ids)
+        .eq("user_id", user.id);
+
+    if (error) throw new Error("Error al rechazar transacciones seleccionadas");
+
+    return { count: ids.length };
+}

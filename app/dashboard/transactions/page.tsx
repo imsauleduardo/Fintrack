@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { getTransactions } from "@/lib/actions/transactions";
 import { getCategories } from "@/lib/actions/categories";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
+import TransactionItem from "@/components/ui/TransactionItem";
 import DashboardHeader from "@/components/layouts/DashboardHeader";
 import { format, isToday, isYesterday } from "date-fns";
 import { es } from "date-fns/locale";
@@ -151,33 +152,17 @@ export default function TransactionsPage() {
                                     {formatDateHeader(date)}
                                 </h3>
                                 <div className="space-y-2">
-                                    {groupedTransactions[date].map((t: any) => {
-                                        const categoryIcon = t.category?.icon;
-                                        const Icon = (Icons as any)[categoryIcon] || Icons.HelpCircle;
-                                        return (
-                                            <motion.div
-                                                layout
-                                                key={t.id}
-                                                className="p-3 flex items-center justify-between border-none shadow-sm bg-muted/30 hover:bg-muted/50 transition-all active:scale-[0.99] rounded-2xl"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm" style={{ backgroundColor: t.category?.color || '#3b82f6' }}>
-                                                        <Icon className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-sm leading-tight">{t.description || t.category?.name}</p>
-                                                        <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{t.category?.name || t.payment_method}</p>
-                                                    </div>
-                                                </div>
-                                                <CurrencyAmount
-                                                    amount={t.type === 'expense' ? -Math.abs(Number(t.amount)) : Math.abs(Number(t.amount))}
-                                                    colored={true}
-                                                    size="lg"
-                                                    className="font-black text-sm tabular-nums"
-                                                />
-                                            </motion.div>
-                                        );
-                                    })}
+                                    {groupedTransactions[date].map((t: any) => (
+                                        <motion.div
+                                            layout
+                                            key={t.id}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                        >
+                                            <TransactionItem transaction={t} />
+                                        </motion.div>
+                                    ))}
                                 </div>
                             </div>
                         ))

@@ -5,6 +5,7 @@ import DashboardHeader from "@/components/layouts/DashboardHeader";
 import StatsSummary from "@/components/features/dashboard/StatsSummary";
 import BudgetWidget from "@/components/features/budgets/BudgetWidget";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
+import TransactionItem from "@/components/ui/TransactionItem";
 import { getTransactions } from "@/lib/actions/transactions";
 import { getPendingTransactions } from "@/lib/actions/pending";
 import { useRouter } from "next/navigation";
@@ -143,32 +144,13 @@ export default function DashboardPage() {
                                         {formatDateHeader(date)}
                                     </h3>
                                     <div className="space-y-2">
-                                        {groupedTransactions[date].slice(0, 5).map((t: any) => {
-                                            const categoryIcon = t.category?.icon;
-                                            const Icon = (Icons as any)[categoryIcon] || Icons.HelpCircle;
-                                            return (
-                                                <div
-                                                    key={t.id}
-                                                    className="p-3 flex items-center justify-between bg-muted/30 rounded-2xl"
-                                                >
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: t.category?.color || '#3b82f6' }}>
-                                                            <Icon className="w-5 h-5" />
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-bold text-sm leading-tight">{t.description || t.category?.name}</p>
-                                                            <p className="text-[9px] text-muted-foreground">{t.category?.name}</p>
-                                                        </div>
-                                                    </div>
-                                                    <CurrencyAmount
-                                                        amount={t.type === 'expense' ? -Math.abs(Number(t.amount)) : Math.abs(Number(t.amount))}
-                                                        colored={true}
-                                                        size="lg"
-                                                        className="font-black tabular-nums"
-                                                    />
-                                                </div>
-                                            );
-                                        })}
+                                        {groupedTransactions[date].slice(0, 5).map((t: any) => (
+                                            <TransactionItem
+                                                key={t.id}
+                                                transaction={t}
+                                            // Optional: Add click handler if we want navigation to details
+                                            />
+                                        ))}
                                     </div>
                                 </div>
                             ))
