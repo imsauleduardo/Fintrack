@@ -38,14 +38,14 @@ export default function StatsSummary({ transactions }: StatsSummaryProps) {
                         <div className="text-right">
                             <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/50 mb-1">Saldo Disponible</p>
                             <div className="flex items-baseline justify-end gap-1">
-                                <span className="text-3xl font-black text-white">$</span>
-                                <CurrencyAmount
-                                    amount={balance}
-                                    colored={false}
-                                    currency=""
-                                    size="3xl"
-                                    className="font-black tracking-tighter text-white"
-                                />
+                                <div className="flex items-baseline justify-end gap-1">
+                                    <CurrencyAmount
+                                        amount={balance}
+                                        colored={false}
+                                        size="3xl"
+                                        className="font-black tracking-tighter text-white"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 import { User, Globe, Bell, Mic, Camera, Mail, LogOut, ChevronRight, ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/components/providers/UserProvider";
 
 export default function SettingsMenuPage() {
     const router = useRouter();
@@ -11,6 +12,8 @@ export default function SettingsMenuPage() {
         await supabase.auth.signOut();
         window.location.href = '/auth/login';
     };
+
+    const { currency } = useUser();
 
     const menuSections = [
         {
@@ -23,7 +26,7 @@ export default function SettingsMenuPage() {
         {
             title: "Preferencias Generales",
             items: [
-                { icon: Globe, label: "Moneda (USD)", action: () => { } },
+                { icon: Globe, label: `Moneda (${currency})`, action: () => router.push('/dashboard/profile') }, // Redirige a perfil donde se cambia
                 { icon: Bell, label: "Notificaciones", action: () => { } },
                 { icon: Mic, label: "Permisos de Micrófono", action: () => { } },
                 { icon: Camera, label: "Permisos de Cámara", action: () => { } },

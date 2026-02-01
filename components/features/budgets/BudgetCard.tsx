@@ -4,7 +4,10 @@ import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { useUser } from "@/components/providers/UserProvider";
+
 export default function BudgetCard({ budget, onDelete }: { budget: any, onDelete: (id: string) => void }) {
+    const { currencySymbol } = useUser();
     const Icon = (Icons as any)[budget.categories?.icon] || Icons.PieChart;
     const progress = Math.min(100, budget.progress);
     const router = useRouter();
@@ -58,8 +61,8 @@ export default function BudgetCard({ budget, onDelete }: { budget: any, onDelete
             <div className="space-y-4">
                 <div className="flex justify-between items-end">
                     <div className="flex items-baseline gap-1">
-                        <p className="text-3xl font-black italic tabular-nums">${budget.spent.toLocaleString()}</p>
-                        <span className="text-xs text-gray-600 font-bold not-italic">de ${budget.amount.toLocaleString()}</span>
+                        <p className="text-3xl font-black italic tabular-nums">{currencySymbol}{budget.spent.toLocaleString()}</p>
+                        <span className="text-xs text-gray-600 font-bold not-italic">de {currencySymbol}{budget.amount.toLocaleString()}</span>
                     </div>
                 </div>
 
@@ -73,7 +76,7 @@ export default function BudgetCard({ budget, onDelete }: { budget: any, onDelete
                 </div>
 
                 <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">
-                    Resta: <span className="text-white">${budget.remaining.toLocaleString()}</span>
+                    Resta: <span className="text-white">{currencySymbol}{budget.remaining.toLocaleString()}</span>
                 </p>
             </div>
         </div>

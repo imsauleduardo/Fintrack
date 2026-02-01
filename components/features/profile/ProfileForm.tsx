@@ -7,6 +7,7 @@ import { supabase } from "@/supabase/client";
 import { Input } from "@/components/ui/Input";
 import { Save, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useUser } from "@/components/providers/UserProvider";
 
 export default function ProfileForm({ initialData }: { initialData: any }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,8 @@ export default function ProfileForm({ initialData }: { initialData: any }) {
         }
     });
 
+    const { refreshProfile } = useUser();
+
     const onSubmit = async (data: ProfileInput) => {
         setIsLoading(true);
         try {
@@ -27,6 +30,7 @@ export default function ProfileForm({ initialData }: { initialData: any }) {
                 .eq('id', initialData.id);
 
             if (error) throw error;
+            await refreshProfile(); // Actualizar contexto global
             alert("Perfil actualizado correctamente");
         } catch (error: any) {
             alert(error.message);

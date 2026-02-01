@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import { useRouter } from "next/navigation";
 import { differenceInDays } from "date-fns";
+import { useUser } from "@/components/providers/UserProvider";
 
 export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id: string) => void }) {
+    const { currencySymbol } = useUser();
     const Icon = (Icons as any)[goal.icon] || Icons.Target;
     const progress = Math.min(100, goal.progress);
     const router = useRouter();
@@ -71,8 +73,8 @@ export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id:
             <div className="space-y-3">
                 <div className="flex justify-between items-center">
                     <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-black italic tabular-nums">${goal.current_amount.toLocaleString()}</p>
-                        <span className="text-[10px] text-muted-foreground font-bold not-italic">de ${goal.target_amount.toLocaleString()}</span>
+                        <p className="text-2xl font-black italic tabular-nums">{currencySymbol}{goal.current_amount.toLocaleString()}</p>
+                        <span className="text-[10px] text-muted-foreground font-bold not-italic">de {currencySymbol}{goal.target_amount.toLocaleString()}</span>
                     </div>
                     <div className="text-right flex items-center gap-2">
                         <p className={`text-xl font-black tabular-nums ${getStatusColor()}`}>{progress.toFixed(0)}%</p>
@@ -92,7 +94,7 @@ export default function GoalCard({ goal, onDelete }: { goal: any, onDelete: (id:
                 <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                     <div className="space-x-1">
                         <span>Resta:</span>
-                        <span className="text-foreground">${goal.remaining.toLocaleString()}</span>
+                        <span className="text-foreground">{currencySymbol}{goal.remaining.toLocaleString()}</span>
                     </div>
                     {goal.isCompleted ? (
                         <span className="text-green-500">✓ Completada</span>

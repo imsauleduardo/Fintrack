@@ -7,7 +7,10 @@ import * as Icons from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
+import { useUser } from "@/components/providers/UserProvider";
+
 export default function BudgetWidget() {
+    const { currencySymbol } = useUser();
     const [budgets, setBudgets] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -97,9 +100,9 @@ export default function BudgetWidget() {
                                     </div>
                                     <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-tight">
                                         <p className="text-muted-foreground">
-                                            ${budget.spent.toLocaleString()} / <span className="text-foreground">${budget.amount.toLocaleString()}</span>
+                                            {currencySymbol}{budget.spent.toLocaleString()} / <span className="text-foreground">{currencySymbol}{budget.amount.toLocaleString()}</span>
                                         </p>
-                                        <p className={config.text}>Resta ${budget.remaining.toLocaleString()}</p>
+                                        <p className={config.text}>Resta {currencySymbol}{budget.remaining.toLocaleString()}</p>
                                     </div>
                                 </div>
                             </button>

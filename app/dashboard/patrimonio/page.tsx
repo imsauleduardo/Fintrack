@@ -64,11 +64,9 @@ export default function PatrimonioPage() {
                                         <div className="text-right">
                                             <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/50 mb-1">Patrimonio Neto</p>
                                             <div className="flex items-baseline justify-end gap-1">
-                                                <span className="text-3xl font-black text-white">$</span>
                                                 <CurrencyAmount
                                                     amount={netWorth}
                                                     colored={false}
-                                                    currency=""
                                                     size="3xl"
                                                     className="font-black tracking-tighter text-white"
                                                 />

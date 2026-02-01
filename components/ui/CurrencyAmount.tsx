@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 
 interface CurrencyAmountProps {
@@ -9,14 +10,18 @@ interface CurrencyAmountProps {
     size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
 }
 
+import { useUser } from '@/components/providers/UserProvider';
+
 const CurrencyAmount = ({
     amount,
-    currency = '$',
+    currency,
     className = '',
     colored = true,
     showSign = true,
     size = 'md'
 }: CurrencyAmountProps) => {
+    const { currencySymbol } = useUser();
+    const finalCurrency = currency || currencySymbol;
 
     const isNegative = amount < 0;
     const isZero = amount === 0;
@@ -43,6 +48,7 @@ const CurrencyAmount = ({
     };
 
     // Formateo de número con separador de miles
+    // TODO: Usar locale basado en la moneda si fuera necesario, por ahora es-MX va bien para formato latino
     const formattedNumber = new Intl.NumberFormat('es-MX', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -54,7 +60,7 @@ const CurrencyAmount = ({
         <span
             className={`font-semibold tabular-nums tracking-tight ${colorClass} ${sizeClasses[size]} ${className}`}
         >
-            {sign}{currency}{formattedNumber}
+            {sign}{finalCurrency}{formattedNumber}
         </span>
     );
 };

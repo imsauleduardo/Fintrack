@@ -221,8 +221,8 @@ export default function EmailSettings() {
                         onClick={handleInitialScan}
                         disabled={hasDoneInitialSync || initialScanning}
                         className={`w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm transition-all ${hasDoneInitialSync
-                                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 cursor-default'
-                                : 'bg-muted hover:bg-muted/80 border border-border text-foreground active:scale-95'
+                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 cursor-default'
+                            : 'bg-muted hover:bg-muted/80 border border-border text-foreground active:scale-95'
                             }`}
                     >
                         {initialScanning ? (
@@ -269,33 +269,22 @@ export default function EmailSettings() {
                         {/* Intervalo */}
                         <div className="p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center justify-between">
                             <span className="text-xs font-medium text-gray-400">Frecuencia Automática</span>
-                            <select
-                                value={status.interval}
-                                onChange={(e) => handleUpdateInterval(e.target.value)}
-                                className="bg-transparent text-xs font-bold text-blue-400 outline-none cursor-pointer text-right"
-                            >
-                                <option value="1">Cada hora</option>
-                                <option value="6">Cada 6 horas</option>
-                                <option value="12">Cada 12 horas</option>
-                                <option value="24">Diariamente</option>
-                            </select>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-muted-foreground mr-1">(Plan gratuito: 1 vez/día)</span>
+                                <span className="text-xs font-bold text-blue-400">Diariamente</span>
+                            </div>
                         </div>
 
                         {/* Hora Preferida */}
                         {status.interval === 24 && (
-                            <div className="p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center justify-between animate-in fade-in slide-in-from-top-1">
+                            <div className="p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center justify-between animate-in fade-in slide-in-from-top-1 opacity-50 cursor-not-allowed">
                                 <span className="text-xs font-medium text-gray-400 flex items-center gap-2">
                                     <Sun className="w-3 h-3 text-orange-400" /> Hora Preferida
                                 </span>
-                                <select
-                                    value={getLocalHour(status.preferredHour)}
-                                    onChange={(e) => handleUpdatePreferredHour(e.target.value)}
-                                    className="bg-transparent text-xs font-bold text-orange-400 outline-none cursor-pointer text-right"
-                                >
-                                    {Array.from({ length: 24 }).map((_, i) => (
-                                        <option key={i} value={i}>{i}:00</option>
-                                    ))}
-                                </select>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">Muy pronto</span>
+                                    <span className="text-xs font-bold text-orange-400/50">20:00</span>
+                                </div>
                             </div>
                         )}
 
