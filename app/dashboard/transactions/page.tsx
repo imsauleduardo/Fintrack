@@ -8,8 +8,6 @@ import { getCategories } from "@/lib/actions/categories";
 import CurrencyAmount from "@/components/ui/CurrencyAmount";
 import TransactionItem from "@/components/ui/TransactionItem";
 import DashboardHeader from "@/components/layouts/DashboardHeader";
-import { format, isToday, isYesterday } from "date-fns";
-import { es } from "date-fns/locale";
 import * as Icons from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -51,19 +49,7 @@ export default function TransactionsPage() {
         return matchesSearch && matchesType && matchesCategory;
     });
 
-    const groupedTransactions = filteredTransactions.reduce((groups: any, t) => {
-        const date = t.date;
-        if (!groups[date]) groups[date] = [];
-        groups[date].push(t);
-        return groups;
-    }, {});
 
-    const formatDateHeader = (dateStr: string) => {
-        const date = new Date(dateStr + 'T00:00:00');
-        if (isToday(date)) return "Hoy";
-        if (isYesterday(date)) return "Ayer";
-        return format(date, "EEEE, d 'de' MMMM", { locale: es });
-    };
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-32 overflow-x-hidden">
@@ -131,7 +117,7 @@ export default function TransactionsPage() {
                 <div className="space-y-8 pt-2">
                     {isLoading ? (
                         <div className="flex justify-center py-20"><Loader2 className="animate-spin text-primary" /></div>
-                    ) : Object.keys(groupedTransactions).length === 0 ? (
+                    ) : filteredTransactions.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -146,26 +132,19 @@ export default function TransactionsPage() {
                             </div>
                         </motion.div>
                     ) : (
-                        Object.keys(groupedTransactions).map((date) => (
-                            <div key={date} className="space-y-2.5">
-                                <h3 className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-3 opacity-60">
-                                    {formatDateHeader(date)}
-                                </h3>
-                                <div className="space-y-2">
-                                    {groupedTransactions[date].map((t: any) => (
-                                        <motion.div
-                                            layout
-                                            key={t.id}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                        >
-                                            <TransactionItem transaction={t} />
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))
+                        <div className="space-y-2">
+                            {filteredTransactions.map((t: any) => (
+                                <motion.div
+                                    layout
+                                    key={t.id}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <TransactionItem transaction={t} />
+                                </motion.div>
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>

@@ -16,6 +16,7 @@ export async function createCategory(data: CategoryInput) {
             icon: data.icon,
             color: data.color,
             type: data.type,
+            description: data.description,
             user_id: user.id
         });
 
@@ -31,7 +32,8 @@ export async function updateCategory(id: string, data: CategoryInput) {
             name: data.name,
             icon: data.icon,
             color: data.color,
-            type: data.type
+            type: data.type,
+            description: data.description
         })
         .eq('id', id);
 

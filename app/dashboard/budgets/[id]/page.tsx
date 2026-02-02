@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, Edit2, TrendingDown, Calendar, Loader2, AlertCircle } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
+import { useUser } from "@/components/providers/UserProvider";
 import { getBudgetById, updateBudget } from "@/lib/actions/budgets";
 import { motion } from "framer-motion";
 import Modal from "@/components/ui/Modal";
@@ -11,6 +12,7 @@ import { AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import DailySpendingChart from "@/components/features/budgets/DailySpendingChart";
+import CurrencyAmount from "@/components/ui/CurrencyAmount";
 
 export default function BudgetDetailPage() {
     const [budget, setBudget] = useState<any>(null);
@@ -18,6 +20,7 @@ export default function BudgetDetailPage() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editAmount, setEditAmount] = useState("");
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+    const { currencySymbol } = useUser();
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
@@ -90,7 +93,7 @@ export default function BudgetDetailPage() {
                         <ChevronLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight">{budget.categories?.name || 'Presupuesto Global'}</h1>
+                        <h1 className="text-xl font-bold tracking-tight">{budget.name || budget.category?.name || 'Presupuesto Global'}</h1>
                         <p className="text-[9px] text-primary font-black uppercase tracking-[0.2em]">Detalle de {budget.period === 'monthly' ? 'el Mes' : budget.period === 'weekly' ? 'la Semana' : budget.period === 'daily' ? 'hoy' : 'el Año'}</p>
                     </div>
                 </div>
@@ -111,8 +114,11 @@ export default function BudgetDetailPage() {
                         </div>
                         <div className="text-right">
                             <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Gastado</p>
-                            <p className="text-xl font-black tabular-nums">${budget.spent.toLocaleString()}</p>
-                            <p className="text-[9px] text-muted-foreground font-bold mt-0.5">de ${budget.amount.toLocaleString()}</p>
+                            <CurrencyAmount amount={budget.spent} className="text-xl font-black justify-end" />
+                            <div className="flex items-center justify-end gap-1 text-[9px] text-muted-foreground font-bold mt-0.5">
+                                <span>de</span>
+                                <CurrencyAmount amount={budget.amount} className="text-[9px]" />
+                            </div>
                         </div>
                     </div>
 
@@ -126,7 +132,7 @@ export default function BudgetDetailPage() {
                     </div>
 
                     <div className="flex justify-between text-[9px] font-bold uppercase tracking-widest relative z-10">
-                        <p className="text-muted-foreground">Resta: <span className="text-foreground">${budget.remaining.toLocaleString()}</span></p>
+                        <div className="flex gap-1 text-muted-foreground">Resta: <CurrencyAmount amount={budget.remaining} className="text-foreground" /></div>
                         <p className={getStatusColor()}>
                             {progress >= 100 ? 'Excedido' : progress >= 80 ? 'Cerca' : 'Control'}
                         </p>
@@ -140,7 +146,7 @@ export default function BudgetDetailPage() {
                             <TrendingDown className="w-3 h-3 text-primary" />
                             <h3 className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Promedio Diario</h3>
                         </div>
-                        <p className="text-lg font-black tabular-nums">${(budget.spent / Math.max(1, new Date().getDate())).toFixed(0)}</p>
+                        <CurrencyAmount amount={budget.spent / Math.max(1, new Date().getDate())} className="text-lg font-black" />
                     </div>
 
                     <div className="p-4 bg-card border border-border rounded-2xl shadow-sm">
@@ -195,7 +201,7 @@ export default function BudgetDetailPage() {
                                             </p>
                                         </div>
                                     </div>
-                                    <p className="text-lg font-black tabular-nums text-foreground">-${Number(tx.amount).toLocaleString()}</p>
+                                    <CurrencyAmount amount={-Number(tx.amount)} className="text-lg font-black text-foreground" />
                                 </motion.div>
                             ))}
                         </div>
@@ -207,7 +213,7 @@ export default function BudgetDetailPage() {
             <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)} title="Editar Límite">
                 <div className="space-y-4">
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Nuevo Límite del Período</label>
+                        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Nuevo Límite del Período ({currencySymbol})</label>
                         <input
                             type="number"
                             value={editAmount}

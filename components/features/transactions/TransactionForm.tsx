@@ -6,8 +6,11 @@ import { transactionSchema, TransactionInput } from "@/lib/validations/transacti
 import { Input } from "@/components/ui/Input";
 import { useEffect, useState } from "react";
 import { getCategories } from "@/lib/actions/categories";
+import { getAssets } from "@/lib/actions/assets";
+import { getLiabilities } from "@/lib/actions/liabilities";
+import { getUserProfile } from "@/lib/actions/profile";
 import * as Icons from "lucide-react";
-import { Loader2, Wallet, CreditCard, Banknote } from "lucide-react";
+import { Loader2, Wallet, CreditCard, Banknote, Landmark, ArrowRightLeft, Plus } from "lucide-react";
 
 interface TransactionFormProps {
     onSubmit: (data: TransactionInput) => void;
@@ -15,37 +18,70 @@ interface TransactionFormProps {
     initialData?: any;
 }
 
-const paymentMethods = [
-    { id: 'Efectivo', icon: Banknote },
-    { id: 'Tarjeta', icon: CreditCard },
-    { id: 'Transferencia', icon: Wallet },
-];
-
 export default function TransactionForm({ onSubmit, isLoading, initialData }: TransactionFormProps) {
     const [categories, setCategories] = useState<any[]>([]);
+    const [assets, setAssets] = useState<any[]>([]);
+    const [liabilities, setLiabilities] = useState<any[]>([]);
+    const [userProfile, setUserProfile] = useState<any>(null);
+    const [isFetchingData, setIsFetchingData] = useState(true);
+
+    const toLocalISO = (date: Date) => {
+        const tzOffset = date.getTimezoneOffset() * 60000;
+        return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+    };
+
     const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<TransactionInput>({
         resolver: zodResolver(transactionSchema),
         defaultValues: initialData ? {
             ...initialData,
-            amount: initialData.amount.toString()
+            amount: initialData.amount.toString(),
+            date: initialData.date ? toLocalISO(new Date(initialData.date)) : toLocalISO(new Date())
         } : {
             type: 'expense',
-            date: new Date().toISOString().split('T')[0],
+            date: toLocalISO(new Date()),
             payment_method: 'Efectivo'
         }
     });
 
     useEffect(() => {
         async function load() {
-            const data = await getCategories();
-            setCategories(data);
+            setIsFetchingData(true);
+            try {
+                const [cats, assts, liabs, profile] = await Promise.all([
+                    getCategories(),
+                    getAssets(),
+                    getLiabilities(),
+                    getUserProfile()
+                ]);
+                setCategories(cats || []);
+                setAssets(assts || []);
+                setLiabilities(liabs || []);
+                setUserProfile(profile);
+            } catch (e) {
+                console.error("Error loading form data:", e);
+            } finally {
+                setIsFetchingData(false);
+            }
         }
         load();
     }, []);
 
     const selectedType = watch("type");
-    const selectedMethod = watch("payment_method");
+    const selectedAssetId = watch("asset_id");
+    const selectedLiabilityId = watch("liability_id");
     const filteredCategories = categories.filter(c => c.type === selectedType);
+
+    const currencySymbol = userProfile?.default_currency === 'PEN' ? 'S/' :
+        userProfile?.default_currency === 'EUR' ? '€' : '$';
+
+    if (isFetchingData) {
+        return (
+            <div className="flex flex-col items-center justify-center py-10 gap-3">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Cargando opciones...</p>
+            </div>
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -69,7 +105,7 @@ export default function TransactionForm({ onSubmit, isLoading, initialData }: Tr
 
             {/* Monto Principal */}
             <div className="relative">
-                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-muted-foreground opacity-50">$</span>
+                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl font-black text-muted-foreground opacity-50">{currencySymbol}</span>
                 <input
                     type="number"
                     step="0.01"
@@ -85,8 +121,13 @@ export default function TransactionForm({ onSubmit, isLoading, initialData }: Tr
                 <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Categoría</label>
                 <div className="grid grid-cols-4 gap-2">
                     {filteredCategories.map(cat => {
-                        const Icon = (Icons as any)[cat.icon] || Icons.HelpCircle;
+                        const iconName = cat.icon ? cat.icon.charAt(0).toUpperCase() + cat.icon.slice(1) : 'HelpCircle';
+                        const LucideIcon = (Icons as any)[iconName];
                         const isSelected = watch("category_id") === cat.id;
+
+                        // Detectar si el icono es un emoji (simple check)
+                        const isEmoji = !LucideIcon && cat.icon && cat.icon.length <= 4;
+
                         return (
                             <button
                                 key={cat.id}
@@ -95,39 +136,93 @@ export default function TransactionForm({ onSubmit, isLoading, initialData }: Tr
                                 className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border transition-all ${isSelected ? 'bg-primary border-primary text-white shadow-md shadow-primary/10' : 'bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50'}`}
                             >
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? 'bg-white/20' : ''}`} style={!isSelected ? { backgroundColor: cat.color + '15', color: cat.color } : {}}>
-                                    <Icon className="w-5 h-5" />
+                                    {LucideIcon ? (
+                                        <LucideIcon className="w-5 h-5" />
+                                    ) : (
+                                        <span className="text-xl">{cat.icon || "🏷️"}</span>
+                                    )}
                                 </div>
-                                <span className="text-[9px] font-bold truncate w-full text-center tracking-tight">{cat.name}</span>
+                                <span className="text-[9px] font-bold truncate w-full text-center tracking-tight leading-none">{cat.name}</span>
                             </button>
                         );
                     })}
                 </div>
             </div>
 
-            {/* Método de Pago */}
-            <div className="space-y-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Método de Pago</label>
-                <div className="flex gap-2">
-                    {paymentMethods.map(method => (
-                        <button
-                            key={method.id}
-                            type="button"
-                            onClick={() => setValue("payment_method", method.id)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border transition-all ${selectedMethod === method.id ? 'bg-primary border-primary text-white shadow-md shadow-primary/10' : 'bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50'}`}
-                        >
-                            <method.icon className="w-3.5 h-3.5" />
-                            <span className="text-[11px] font-bold">{method.id}</span>
-                        </button>
-                    ))}
+            {/* Vínculo con Cuenta (Activo o Pasivo) */}
+            <div className="space-y-3">
+                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">
+                    {selectedType === 'expense' ? '¿De dónde sale el dinero?' : '¿A qué cuenta ingresa?'}
+                </label>
+
+                <div className="grid grid-cols-2 gap-3">
+                    {/* Activos */}
+                    <div className="space-y-2 col-span-2">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Landmark className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-[9px] font-bold text-muted-foreground/70 uppercase">Activos</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                            {assets.map(asset => (
+                                <button
+                                    key={asset.id}
+                                    type="button"
+                                    onClick={() => {
+                                        setValue("asset_id", asset.id);
+                                        setValue("liability_id", undefined);
+                                        setValue("payment_method", asset.name);
+                                    }}
+                                    className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${selectedAssetId === asset.id ? 'bg-primary border-primary text-white' : 'bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50'}`}
+                                >
+                                    <span className="text-[9px] font-bold truncate w-full text-center">{asset.name}</span>
+                                </button>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setValue("asset_id", undefined);
+                                    setValue("liability_id", undefined);
+                                    setValue("payment_method", "Efectivo");
+                                }}
+                                className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${!selectedAssetId && !selectedLiabilityId ? 'bg-primary border-primary text-white' : 'bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50'}`}
+                            >
+                                <span className="text-[9px] font-bold">Efectivo</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Pasivos (solo si es gasto para marcar deuda o ingreso para pagar deuda) */}
+                    <div className="space-y-2 col-span-2">
+                        <div className="flex items-center gap-2 mb-1">
+                            <CreditCard className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-[9px] font-bold text-muted-foreground/70 uppercase">Pasivos / Deudas</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                            {liabilities.map(liab => (
+                                <button
+                                    key={liab.id}
+                                    type="button"
+                                    onClick={() => {
+                                        setValue("liability_id", liab.id);
+                                        setValue("asset_id", undefined);
+                                        setValue("payment_method", liab.name);
+                                    }}
+                                    className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${selectedLiabilityId === liab.id ? 'bg-primary border-primary text-white' : 'bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50'}`}
+                                >
+                                    <span className="text-[9px] font-bold truncate w-full text-center">{liab.name}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Fecha y Descripción */}
             <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Fecha</label>
+                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Fecha y Hora</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="w-full bg-muted/50 border border-border rounded-xl p-3 text-[11px] font-bold text-foreground outline-none focus:border-primary transition-all"
                         {...register("date")}
                     />

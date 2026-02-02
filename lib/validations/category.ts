@@ -5,6 +5,7 @@ export const categorySchema = z.object({
     icon: z.string().min(1, "Selecciona un icono"),
     color: z.string().min(1, "Selecciona un color"),
     type: z.enum(["expense", "income"]),
+    description: z.string().optional(),
 });
 
 export type CategoryInput = z.infer<typeof categorySchema>;

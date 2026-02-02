@@ -9,8 +9,6 @@ import TransactionItem from "@/components/ui/TransactionItem";
 import { getTransactions } from "@/lib/actions/transactions";
 import { getPendingTransactions } from "@/lib/actions/pending";
 import { useRouter } from "next/navigation";
-import { format, isToday, isYesterday } from "date-fns";
-import { es } from "date-fns/locale";
 import * as Icons from "lucide-react";
 import { ListX, Sparkles, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,19 +42,7 @@ export default function DashboardPage() {
         }
     };
 
-    const groupedTransactions = transactions.reduce((groups: any, t) => {
-        const date = t.date;
-        if (!groups[date]) groups[date] = [];
-        groups[date].push(t);
-        return groups;
-    }, {});
 
-    const formatDateHeader = (dateStr: string) => {
-        const date = new Date(dateStr + 'T00:00:00');
-        if (isToday(date)) return "Hoy";
-        if (isYesterday(date)) return "Ayer";
-        return format(date, "EEEE, d 'de' MMMM", { locale: es });
-    };
 
     return (
         <div className="w-full max-w-full overflow-x-hidden bg-background text-foreground pb-24">
@@ -130,7 +116,7 @@ export default function DashboardPage() {
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        {Object.keys(groupedTransactions).length === 0 ? (
+                        {transactions.length === 0 ? (
                             <div className="px-2">
                                 <div className="bg-card border border-dashed border-border rounded-[28px] p-8 flex flex-col items-center justify-center gap-4 text-center">
                                     <ListX className="w-5 h-5 text-muted-foreground" />
@@ -138,22 +124,14 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                         ) : (
-                            Object.keys(groupedTransactions).map((date) => (
-                                <div key={date} className="space-y-2.5">
-                                    <h3 className="text-[9px] font-black text-muted-foreground uppercase tracking-widest ml-3 opacity-60">
-                                        {formatDateHeader(date)}
-                                    </h3>
-                                    <div className="space-y-2">
-                                        {groupedTransactions[date].slice(0, 5).map((t: any) => (
-                                            <TransactionItem
-                                                key={t.id}
-                                                transaction={t}
-                                            // Optional: Add click handler if we want navigation to details
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))
+                            <div className="space-y-2">
+                                {transactions.slice(0, 5).map((t: any) => (
+                                    <TransactionItem
+                                        key={t.id}
+                                        transaction={t}
+                                    />
+                                ))}
+                            </div>
                         )}
                     </div>
                 )}

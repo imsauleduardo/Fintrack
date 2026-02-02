@@ -36,9 +36,10 @@ export async function parseTransactionText(text: string) {
           "description": "string", 
           "category_id": "string", 
           "type": "expense" | "income", 
-          "date": "YYYY-MM-DD",
+          "date": "YYYY-MM-DD HH:mm:ss",
           "payment_method": "Efectivo" | "Tarjeta" | "Transferencia"
         }
+        Si no hay hora clara, usa HH:mm:ss de la hora actual.
         `;
 
         const result = await model.generateContent(prompt);
@@ -78,7 +79,7 @@ export async function parseReceiptImage(base64Image: string) {
           "description": "string",
           "category_id": "string",
           "type": "expense",
-          "date": "YYYY-MM-DD",
+          "date": "YYYY-MM-DD HH:mm:ss",
           "payment_method": "Efectivo"
         }
         `;

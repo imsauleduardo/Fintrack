@@ -1,6 +1,6 @@
 "use client";
 
-import { User, Globe, Bell, Mic, Camera, Mail, LogOut, ChevronRight, ChevronLeft } from "lucide-react";
+import { User, Globe, Bell, Mic, Camera, Mail, LogOut, ChevronRight, ChevronLeft, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/components/providers/UserProvider";
 
@@ -26,7 +26,8 @@ export default function SettingsMenuPage() {
         {
             title: "Preferencias Generales",
             items: [
-                { icon: Globe, label: `Moneda (${currency})`, action: () => router.push('/dashboard/profile') }, // Redirige a perfil donde se cambia
+                { icon: Globe, label: `Moneda (${currency})`, action: () => router.push('/dashboard/profile') },
+                { icon: Tag, label: "Categorías", action: () => router.push('/dashboard/settings/categories') },
                 { icon: Bell, label: "Notificaciones", action: () => { } },
                 { icon: Mic, label: "Permisos de Micrófono", action: () => { } },
                 { icon: Camera, label: "Permisos de Cámara", action: () => { } },

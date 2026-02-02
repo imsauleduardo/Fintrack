@@ -179,12 +179,25 @@ export async function processSelectedEmails(messageIds: string[], userId?: strin
             body += " " + Buffer.from(fullMsg.data.payload.body.data, 'base64').toString('utf-8');
         }
 
+        const internalTime = fullMsg.data.internalDate ? new Date(parseInt(fullMsg.data.internalDate)).toLocaleString('es-PE') : new Date().toLocaleString('es-PE');
         const prompt = `
-        Analiza este correo y extrae la información financiera.
-        Contenido: "${body.substring(0, 3000)}"
+        Analiza este correo y extrae la información financiera DETALLADA.
+        Contenido: "${body.substring(0, 4000)}"
         
         Categorías (Usa el ID exacto):
         ${categoriesLabels}
+        
+        Referencia de tiempo (Hora del correo): ${internalTime}
+
+        REGLAS PARA LA DESCRIPCIÓN:
+        - Debe ser específica: [Nombre del Comercio] - [Detalle del gasto/ingreso].
+        - Ejemplo: "Starbucks - Café y Sandwich" o "Netflix - Suscripción Mensual".
+        - Evita descripciones genéricas como solo "Pago" o "Compra".
+
+        REGLAS PARA LA FECHA/HORA:
+        - Busca la hora exacta del movimiento en el texto.
+        - Si no encuentras una hora específica en el texto, usa la hora de referencia del correo.
+        - Formato de respuesta para "date": "YYYY-MM-DD HH:mm:ss"
         
         Responde ÚNICAMENTE un JSON:
         { 
@@ -192,10 +205,10 @@ export async function processSelectedEmails(messageIds: string[], userId?: strin
           "description": "string", 
           "category_id": "string", 
           "type": "expense" | "income", 
-          "date": "YYYY-MM-DD", 
+          "date": "YYYY-MM-DD HH:mm:ss", 
           "source_email_id": "${id}" 
         }
-        Si no es un movimiento real, responde null.
+        Si no es un movimiento real o es publicidad, responde null.
         `;
 
         try {
@@ -211,13 +224,15 @@ export async function processSelectedEmails(messageIds: string[], userId?: strin
                 const amount = parseFloat(data.amount);
                 if (isNaN(amount) || amount <= 0) continue;
 
-                const emailDate = fullMsg.data.internalDate ? new Date(parseInt(fullMsg.data.internalDate)).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+                const emailDateTime = fullMsg.data.internalDate
+                    ? new Date(parseInt(fullMsg.data.internalDate)).toISOString().replace('T', ' ').substring(0, 19)
+                    : new Date().toISOString().replace('T', ' ').substring(0, 19);
 
                 await supabase.from("pending_transactions").upsert({
                     user_id: targetUserId,
                     ...data,
                     amount: amount,
-                    date: data.date || emailDate,
+                    date: data.date || emailDateTime,
                     status: 'pending'
                 }, { onConflict: 'source_email_id' });
 

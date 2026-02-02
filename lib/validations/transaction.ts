@@ -7,6 +7,8 @@ export const transactionSchema = z.object({
     date: z.string().min(1, "La fecha es obligatoria"),
     type: z.enum(["expense", "income"]),
     payment_method: z.string().min(1, "Selecciona un método de pago"),
+    asset_id: z.string().uuid().optional(),
+    liability_id: z.string().uuid().optional(),
 });
 
 export type TransactionInput = z.infer<typeof transactionSchema>;

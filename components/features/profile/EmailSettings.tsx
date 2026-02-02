@@ -213,8 +213,8 @@ export default function EmailSettings() {
                         <h3 className={`font-bold text-sm uppercase tracking-widest ${!hasDoneInitialSync ? 'text-foreground' : 'text-muted-foreground'}`}>Escaneo Inicial</h3>
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                        Analizaremos los correos de los últimos 30 días para buscar registros pasados. Este paso es necesario para activar la sincronización automática.
+                    <p className="text-sm text-muted-foreground mb-6 leading-relaxed relative pl-4 border-l-2 border-primary/30">
+                        <span className="font-bold text-foreground">Escaneo rápido:</span> Analizamos tus últimos 250 correos para establecer el punto de partida y activar la detección automática de futuros gastos.
                     </p>
 
                     <button
@@ -238,7 +238,7 @@ export default function EmailSettings() {
                         ) : (
                             <>
                                 <RefreshCw className="w-4 h-4" />
-                                <span>Lanzar Escaneo de 30 días</span>
+                                <span>Calibrar y Activar Sincronización</span>
                             </>
                         )}
                     </button>

@@ -13,6 +13,7 @@ export async function getPendingTransactions() {
         .select("*")
         .eq("user_id", user.id)
         .eq("status", "pending")
+        .order("date", { ascending: false })
         .order("created_at", { ascending: false });
 
     return data || [];

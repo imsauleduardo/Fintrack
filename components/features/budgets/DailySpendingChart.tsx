@@ -5,7 +5,10 @@ import { useMemo } from 'react';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, isSameDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+import { useUser } from "@/components/providers/UserProvider";
+
 export default function DailySpendingChart({ transactions, budgetAmount }: { transactions: any[], budgetAmount: number }) {
+    const { currencySymbol } = useUser();
     const chartData = useMemo(() => {
         const start = startOfMonth(new Date());
         const end = endOfMonth(new Date());
@@ -57,7 +60,7 @@ export default function DailySpendingChart({ transactions, budgetAmount }: { tra
                         stroke="#666"
                         fontSize={10}
                         tickLine={false}
-                        tickFormatter={(value) => `$${value}`}
+                        tickFormatter={(value) => `${currencySymbol}${value}`}
                     />
                     <Bar dataKey="average" fill="#374151" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="spent" radius={[4, 4, 0, 0]}>
