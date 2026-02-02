@@ -54,10 +54,10 @@ export default function InsightsCard() {
 
     const getColors = (type: string) => {
         switch (type) {
-            case 'warning': return 'from-orange-600/10 to-red-600/10 border-orange-500/20 text-orange-500';
-            case 'success': return 'from-green-600/10 to-emerald-600/10 border-green-500/20 text-green-500';
-            case 'tip': return 'from-purple-600/10 to-pink-600/10 border-purple-500/20 text-purple-500';
-            default: return 'from-blue-600/10 to-cyan-600/10 border-blue-500/20 text-blue-500';
+            case 'warning': return 'bg-orange-50 dark:from-orange-600/10 dark:to-red-600/10 border-orange-200 dark:border-orange-500/20 text-orange-700 dark:text-orange-500';
+            case 'success': return 'bg-green-50 dark:from-green-600/10 dark:to-emerald-600/10 border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-500';
+            case 'tip': return 'bg-purple-50 dark:from-purple-600/10 dark:to-pink-600/10 border-purple-200 dark:border-purple-500/20 text-purple-700 dark:text-purple-500';
+            default: return 'bg-blue-50 dark:from-blue-600/10 dark:to-cyan-600/10 border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-500';
         }
     };
 
@@ -106,9 +106,9 @@ export default function InsightsCard() {
                     >
                         <div className="flex items-center gap-2">
                             {getIcon(currentInsight.type)}
-                            <h4 className="font-bold text-white">{currentInsight.title}</h4>
+                            <h4 className="font-bold text-foreground">{currentInsight.title}</h4>
                         </div>
-                        <p className="text-sm text-gray-300 leading-relaxed">{currentInsight.description}</p>
+                        <p className="text-sm text-foreground/80 leading-relaxed text-justify">{currentInsight.description}</p>
                     </motion.div>
                 )}
             </AnimatePresence>

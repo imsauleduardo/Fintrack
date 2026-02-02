@@ -10,6 +10,7 @@ import BudgetCard from "@/components/features/budgets/BudgetCard";
 import Toast from "@/components/ui/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 import { AnimatePresence } from "framer-motion";
+import DashboardHeader from "@/components/layouts/DashboardHeader";
 
 type Period = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -47,17 +48,10 @@ export default function BudgetsPage() {
 
     return (
         <div className="min-h-screen bg-background text-foreground pb-20 p-6">
-            <header className="flex items-center mb-10 pt-4">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => router.back()} className="p-3 bg-muted rounded-2xl border border-border">
-                        <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-bold">Presupuestos</h1>
-                        <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em]">Control de Gastos</p>
-                    </div>
-                </div>
-            </header>
+            <DashboardHeader
+                user={{ name: "Saúl", avatarLetter: "S" }}
+                title="Presupuestos"
+            />
 
             <div className="mb-8 p-1 bg-muted rounded-[24px] border border-border grid grid-cols-4 gap-1">
                 {periods.map(period => (

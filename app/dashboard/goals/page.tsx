@@ -42,7 +42,7 @@ export default function GoalsPage() {
             <DashboardHeader
                 user={{ name: "Saúl", avatarLetter: "S" }}
                 label="Metas Financieras"
-                title="Mis Objetivos"
+                title="Metas"
             />
 
             <div className="px-6 relative pt-4">

@@ -36,8 +36,9 @@ export default function PatrimonioPage() {
         <div className="min-h-screen bg-background text-foreground pb-20">
             <DashboardHeader
                 user={{ name: "Saúl", avatarLetter: "S" }}
+                user={{ name: "Saúl", avatarLetter: "S" }}
                 label="Activos y Pasivos"
-                title="Mi Patrimonio"
+                title="Patrimonio"
             />
 
             <div className="">

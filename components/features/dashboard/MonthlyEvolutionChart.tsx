@@ -4,8 +4,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachMonthOfInterval, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useUser } from "@/components/providers/UserProvider";
 
 export default function MonthlyEvolutionChart({ transactions }: { transactions: any[] }) {
+    const { currencySymbol } = useUser();
     // Generar últimos 6 meses
     const endDate = new Date();
     const startDate = subMonths(endDate, 5);
@@ -47,7 +49,7 @@ export default function MonthlyEvolutionChart({ transactions }: { transactions: 
                                 {entry.name}:
                             </span>
                             <span className="text-sm font-black tabular-nums text-white">
-                                ${entry.value.toLocaleString()}
+                                {currencySymbol}{entry.value.toLocaleString()}
                             </span>
                         </div>
                     ))}
@@ -75,7 +77,7 @@ export default function MonthlyEvolutionChart({ transactions }: { transactions: 
                     <YAxis
                         stroke="#6b7280"
                         style={{ fontSize: '12px', fontWeight: 'bold' }}
-                        tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                        tickFormatter={(value) => `${currencySymbol}${(value / 1000).toFixed(0)}k`}
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend

@@ -2,6 +2,7 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { TrendingDown } from 'lucide-react';
+import { useUser } from "@/components/providers/UserProvider";
 
 interface CategoryData {
     name: string;
@@ -10,6 +11,7 @@ interface CategoryData {
 }
 
 export default function CategoryPieChart({ transactions }: { transactions: any[] }) {
+    const { currencySymbol } = useUser();
     // Agrupar gastos por categoría
     const categoryMap = new Map<string, { name: string; total: number; color: string }>();
 
@@ -63,7 +65,7 @@ export default function CategoryPieChart({ transactions }: { transactions: any[]
             return (
                 <div className="bg-black/90 border border-white/20 rounded-2xl p-4 backdrop-blur-xl">
                     <p className="text-xs font-bold text-white mb-1">{payload[0].name}</p>
-                    <p className="text-lg font-black tabular-nums text-white">${payload[0].value.toLocaleString()}</p>
+                    <p className="text-lg font-black tabular-nums text-white">{currencySymbol}{payload[0].value.toLocaleString()}</p>
                     <p className="text-xs text-gray-400 font-bold">{percentage}% del total</p>
                 </div>
             );
@@ -104,7 +106,7 @@ export default function CategoryPieChart({ transactions }: { transactions: any[]
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-bold text-white truncate">{item.name}</p>
-                            <p className="text-[10px] text-gray-500 font-bold tabular-nums">${item.value.toLocaleString()}</p>
+                            <p className="text-[10px] text-gray-500 font-bold tabular-nums">{currencySymbol}{item.value.toLocaleString()}</p>
                         </div>
                     </div>
                 ))}
