@@ -123,6 +123,35 @@ export async function deleteTransaction(id: string) {
     return { success: true };
 }
 
+export async function deleteTransactions(ids: string[]) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("No autenticado");
+
+    // Fetch all transactions before deleting to reverse balances
+    const { data: transactions } = await supabase.from("transactions").select("*").in("id", ids).eq("user_id", user.id);
+
+    const { error } = await supabase
+        .from("transactions")
+        .delete()
+        .in("id", ids)
+        .eq("user_id", user.id);
+
+    if (error) throw new Error(error.message);
+
+    // Reverse balances for each
+    if (transactions) {
+        for (const tx of transactions) {
+            if (tx.asset_id || tx.liability_id) {
+                await syncAccountBalance(supabase, tx.type, Number(tx.amount), tx.asset_id, tx.liability_id, true);
+            }
+        }
+    }
+
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+
 export async function getTransactions() {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
