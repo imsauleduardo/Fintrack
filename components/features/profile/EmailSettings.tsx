@@ -275,18 +275,16 @@ export default function EmailSettings() {
                             </div>
                         </div>
 
-                        {/* Hora Preferida */}
-                        {status.interval === 24 && (
-                            <div className="p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center justify-between animate-in fade-in slide-in-from-top-1 opacity-50 cursor-not-allowed">
-                                <span className="text-xs font-medium text-gray-400 flex items-center gap-2">
-                                    <Sun className="w-3 h-3 text-orange-400" /> Hora Preferida
-                                </span>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">Muy pronto</span>
-                                    <span className="text-xs font-bold text-orange-400/50">20:00</span>
-                                </div>
+                        {/* Info de Sincronización Diaria */}
+                        <div className="p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center justify-between animate-in fade-in slide-in-from-top-1">
+                            <span className="text-xs font-medium text-gray-400 flex items-center gap-2">
+                                <Sun className="w-3 h-3 text-orange-400" /> Sincronización Diaria
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">Automática</span>
+                                <span className="text-xs font-bold text-orange-400">08:00 PM (Lima)</span>
                             </div>
-                        )}
+                        </div>
 
                         <div className="pt-2">
                             <button

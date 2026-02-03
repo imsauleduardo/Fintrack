@@ -46,19 +46,9 @@ export async function GET(request: Request) {
                     const lastSync = new Date(entry.last_sync_at);
                     const hoursSinceLastSync = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60);
 
-                    if (entry.sync_interval === 24) {
-                        // Modo Diario: Verificar si es la hora preferida (en UTC)
-                        // Si preferred_sync_hour es null, fallback a intervalo simple
-                        if (entry.preferred_sync_hour !== null && entry.preferred_sync_hour !== undefined) {
-                            // Margen de 1 hora para asegurar que se ejecute si el cron se retrasa un poco
-                            shouldSync = currentHour === entry.preferred_sync_hour && hoursSinceLastSync >= 20;
-                        } else {
-                            shouldSync = hoursSinceLastSync >= 24;
-                        }
-                    } else {
-                        // Modos 1h, 6h, 12h: Simplemente verificar intervalo
-                        shouldSync = hoursSinceLastSync >= entry.sync_interval;
-                    }
+                    // Sincronización Codiciosa: Si el cron se despierta una vez al día,
+                    // procesamos a cualquiera que no se haya sincronizado en las últimas 20 horas.
+                    shouldSync = hoursSinceLastSync >= 20;
                 }
 
                 if (!shouldSync) continue; // Saltar usuario
