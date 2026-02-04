@@ -37,22 +37,8 @@ export async function GET(request: Request) {
 
         for (const entry of users) {
             try {
-                // Lógica de decisión: ¿Debe sincronizarse ahora?
-                let shouldSync = false;
-
-                if (!entry.last_sync_at) {
-                    shouldSync = true; // Nunca se ha sincronizado
-                } else {
-                    const lastSync = new Date(entry.last_sync_at);
-                    const hoursSinceLastSync = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60);
-
-                    // Sincronización Codiciosa: Si el cron se despierta una vez al día,
-                    // procesamos a cualquiera que no se haya sincronizado en las últimas 20 horas.
-                    shouldSync = hoursSinceLastSync >= 20;
-                }
-
-                if (!shouldSync) continue; // Saltar usuario
-
+                // Garantía de Ejecución Diaria: El cron siempre se ejecuta
+                // La duplicación se previene mediante el timestamp last_sync_at en getPotentialEmails
                 const userId = entry.user_id;
                 const fcmToken = (entry.users as any)?.fcm_token;
 
