@@ -48,7 +48,7 @@ export default function DashboardPage() {
         <div className="w-full max-w-full overflow-x-hidden bg-background text-foreground pb-24">
             <DashboardHeader user={{ name: "Saúl", avatarLetter: "S" }} />
 
-            <div className="space-y-8 mb-8 max-w-full overflow-hidden px-4">
+            <div className="space-y-8 mb-8 max-w-full overflow-hidden">
                 {/* Alerta de Pendientes */}
                 <AnimatePresence>
                     {pendingCount > 0 && (
@@ -83,9 +83,8 @@ export default function DashboardPage() {
                     <StatsSummary transactions={transactions} />
                 )}
 
-                {/* Presupuestos */}
                 <div className="space-y-3 max-w-full overflow-hidden">
-                    <div className="flex justify-between items-center px-6">
+                    <div className="flex justify-between items-center">
                         <h2 className="text-lg font-bold tracking-tight">Presupuestos</h2>
                         <button
                             onClick={() => router.push('/dashboard/budgets')}
@@ -94,12 +93,12 @@ export default function DashboardPage() {
                             Ver todos
                         </button>
                     </div>
-                    {isLoading ? <div className="px-4"><Skeleton height="140px" /></div> : <BudgetWidget />}
+                    {isLoading ? <div><Skeleton height="140px" /></div> : <BudgetWidget />}
                 </div>
             </div>
 
-            <section className="space-y-4 px-4 max-w-full overflow-hidden">
-                <div className="flex justify-between items-center px-2">
+            <section className="space-y-4 max-w-full overflow-hidden">
+                <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold tracking-tight">Movimientos</h2>
                     <button
                         onClick={() => router.push('/dashboard/transactions')}
@@ -110,14 +109,14 @@ export default function DashboardPage() {
                 </div>
 
                 {isLoading ? (
-                    <div className="space-y-3 p-2">
+                    <div className="space-y-3">
                         <Skeleton height="60px" />
                         <Skeleton height="60px" />
                     </div>
                 ) : (
                     <div className="space-y-6">
                         {transactions.length === 0 ? (
-                            <div className="px-2">
+                            <div>
                                 <div className="bg-card border border-dashed border-border rounded-[28px] p-8 flex flex-col items-center justify-center gap-4 text-center">
                                     <ListX className="w-5 h-5 text-muted-foreground" />
                                     <p className="font-bold text-sm">Sin movimientos</p>

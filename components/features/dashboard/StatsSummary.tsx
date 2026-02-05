@@ -22,7 +22,7 @@ export default function StatsSummary({ transactions }: StatsSummaryProps) {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="px-4"
+            className=""
         >
             <div className="relative overflow-hidden p-8 bg-gradient-to-br from-primary via-blue-700 to-indigo-900 rounded-[42px] text-white shadow-2xl shadow-primary/30">
                 {/* Elementos Decorativos de Diseño (Efectos de luz) */}

@@ -127,7 +127,7 @@ export default function TransactionsPage() {
         <div className="min-h-screen bg-background text-foreground pb-32 overflow-x-hidden">
             <DashboardHeader user={{ name: "Saúl", avatarLetter: "S" }} />
 
-            <div className="px-6 space-y-6 pt-4">
+            <div className="space-y-6 pt-4">
                 {/* Cabecera de Página con Buscador */}
                 <div className="flex items-center gap-4 flex-wrap">
                     <button

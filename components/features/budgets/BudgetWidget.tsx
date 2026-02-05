@@ -37,7 +37,7 @@ export default function BudgetWidget() {
 
     if (budgets.length === 0) {
         return (
-            <div className="px-6">
+            <div>
                 <div className="bg-card border border-dashed border-border rounded-[28px] p-6 flex flex-col items-center justify-center gap-2 text-center">
                     <Wallet className="w-5 h-5 text-muted-foreground" />
                     <p className="font-bold text-sm">Sin presupuestos</p>
@@ -49,7 +49,7 @@ export default function BudgetWidget() {
     return (
         <div className="w-full">
             {/* Contenedor Flex con Scroll Horizontal CSS Nativo */}
-            <div className="carousel-container no-scrollbar flex gap-4 px-6 pb-2">
+            <div className="carousel-container no-scrollbar flex gap-4">
                 {budgets.map((budget) => {
                     const progress = Math.min(100, budget.progress);
                     const isWarning = progress >= 80 && progress < 100;
@@ -66,7 +66,7 @@ export default function BudgetWidget() {
                     return (
                         <div
                             key={budget.id}
-                            className="carousel-item w-[85%] last:mr-6"
+                            className="carousel-item w-[85%]"
                         >
                             <button
                                 onClick={() => router.push(`/dashboard/budgets/${budget.id}`)}

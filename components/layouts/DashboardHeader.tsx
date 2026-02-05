@@ -31,7 +31,7 @@ export default function DashboardHeader({ user, title, label }: DashboardHeaderP
     }, []);
 
     return (
-        <header className="flex justify-between items-center mb-10 pt-4 px-2">
+        <header className="flex justify-between items-center mb-10 pt-4">
             <div className="flex items-center gap-4 flex-1 min-w-0">
                 <h1 className="text-2xl font-black text-foreground truncate">{title || label || "Resumen"}</h1>
             </div>

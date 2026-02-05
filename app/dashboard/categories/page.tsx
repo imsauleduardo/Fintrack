@@ -65,7 +65,7 @@ export default function CategoriesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white p-6 max-w-2xl mx-auto pb-24">
+        <div className="min-h-screen bg-background text-foreground pb-24">
             <header className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
                     <Link href="/dashboard" className="p-3 bg-white/5 rounded-2xl border border-white/10">

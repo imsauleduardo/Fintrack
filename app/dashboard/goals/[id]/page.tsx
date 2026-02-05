@@ -105,7 +105,7 @@ export default function GoalDetailPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground p-6 pb-24 max-w-2xl mx-auto">
+        <div className="min-h-screen bg-background text-foreground pb-24">
             <header className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.push('/dashboard/goals')} className="p-2.5 bg-card border border-border rounded-2xl text-muted-foreground hover:text-foreground transition-colors">
